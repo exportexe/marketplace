@@ -1,8 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
-  }
+
+    getHello() {
+        return JSON.stringify({
+            Server: "http://localhost:4000",
+            Source: "Marketplace",
+            Author: "export.exe"
+        });
+    }
 }
