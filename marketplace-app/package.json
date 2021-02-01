@@ -1,8 +1,8 @@
 {
   "name": "marketplace-app",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Online store for buying devices",
+  "author": "exportexe",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
