@@ -1,4 +1,4 @@
-export interface Base {
+export class Base {
     id?: string;
     name?: string;
 }

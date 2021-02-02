@@ -1,29 +1,36 @@
-import {Body, Controller, Get, Param, Post, Query} from '@nestjs/common';
+import {Body, Controller, Get, Header, HttpCode, HttpStatus, Post} from '@nestjs/common';
 
 import {UserInfoService} from '../../shared/services/user-info.service';
-import {UserInfoDto} from './dto/user-info-dto.model';
-import {UserInfoCreateDto} from './dto/user-info-create-dto.model';
+import {UserInfo} from './schema/user-info.schema';
+import {UserInfoCreateDto} from './dto/user-info-create.dto';
 
 @Controller('api/user-info')
 export class UserInfoController {
 
-    constructor (private _userInfoService: UserInfoService) {
+    constructor (private readonly _userInfoService: UserInfoService) {
     }
 
-    @Get('find')
-    async findOneUserInfo(@Query('id') id: string): Promise<UserInfoDto> {
-        return await this._userInfoService.getOneUserInfo(id);
-    }
-
-    @Get('findAll')
-    async findAll(): Promise<UserInfoDto[]> {
-        return await this._userInfoService.getAllUserInfos();
+    @Get('all')
+    async findAll(): Promise<UserInfo[]> {
+        return this._userInfoService.getAllUserInfos();
     }
 
     @Post('create')
+    @HttpCode(HttpStatus.CREATED)
+    @Header('Cache-Control', 'no-cache')
+    create(@Body() userInfoCreateDto: UserInfoCreateDto): Promise<UserInfo> {
+        return this._userInfoService.createUserInfo(userInfoCreateDto);
+    }
+
+    /*@Get('find')
+    async findOneUserInfo(@Query('id') id: string): Promise<UserInfoDto> {
+        return await this._userInfoService.
+    }*/
+
+    /*@Post('create')
     async createUserInfo(@Body() userInfoCreateDto: UserInfoCreateDto): Promise<UserInfoDto> {
         return await this._userInfoService.createUserInfo(userInfoCreateDto);
-    }
+    }*/
 
     /*
     Will be implemented in future

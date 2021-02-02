@@ -1,6 +1,4 @@
-import {Base} from '../../../shared/models/base.model';
-
-export interface UserInfoDto extends Base {
+export class UserInfoCreateDto {
     firstName: string;
     lastName: string;
     userName: string;

@@ -5,11 +5,11 @@ import {AppModule} from './app.module';
 
 const PORT = process.env.PORT;
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
     app.enableCors();
     await app.listen(PORT);
+
     Logger.log('Server started, running on http://localhost:' + PORT, 'Bootstrap');
 }
-
 bootstrap();
