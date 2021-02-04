@@ -1,4 +1,4 @@
 export type Base = Partial<{
-    _id: number;
+    id: number;
     name: string;
 }>;

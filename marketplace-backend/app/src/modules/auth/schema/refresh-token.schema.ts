@@ -1,10 +1,13 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {Document} from 'mongoose';
 
-export type RefreshTokenDocument = RefreshToken;
+export type RefreshTokenDocument = RefreshToken & Document;
 
 @Schema()
-export class RefreshToken extends Document {
+export class RefreshToken {
+
+    @Prop({unique: true})
+    id: string;
 
     @Prop()
     customerId: string;

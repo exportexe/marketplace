@@ -2,7 +2,7 @@ import {Body, Controller, Get, HttpCode, HttpStatus, Param, Post} from '@nestjs/
 
 import {CustomersService} from '../service/customers.service';
 import {Customer} from '../schema/customer.schema';
-import {CreateCustomerDto} from '../dto/create-customer.dto';
+import {RegisterRequest} from '../../../shared/models/requests.model';
 
 @Controller('api/customerManagement')
 export class CustomersController {
@@ -24,7 +24,7 @@ export class CustomersController {
 
     @Post('create')
     @HttpCode(HttpStatus.CREATED)
-    async createNewCustomer(@Body() customerDto: CreateCustomerDto): Promise<Customer> {
-        return this._customersService.createNewCustomer(customerDto);
+    async createNewCustomer(@Body() registerRequest: RegisterRequest): Promise<Customer> {
+        return this._customersService.createCustomerFromRequest(registerRequest);
     }
 }

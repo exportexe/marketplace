@@ -22,6 +22,10 @@ import {CustomersRepository} from './repository/customers.repository';
         CustomersService,
         CustomersRepository,
     ],
+    exports: [
+        CustomersService,
+        CustomersRepository,
+    ],
 })
 export class CustomersModule {
 }

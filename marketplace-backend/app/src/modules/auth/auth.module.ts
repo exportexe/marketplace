@@ -2,10 +2,11 @@ import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {JwtModule} from '@nestjs/jwt';
 
-import {AuthService} from './service/auth.service';
 import {RefreshTokenRepository} from './repository/refresh-token.repository';
 import {TokensService} from './service/tokens.service';
 import {RefreshToken, RefreshTokenSchema} from './schema/refresh-token.schema';
+import {AuthController} from './controller/auth.controller';
+import {CustomersModule} from '../customers/customers.module';
 
 @Module({
     imports: [
@@ -21,9 +22,12 @@ import {RefreshToken, RefreshTokenSchema} from './schema/refresh-token.schema';
                 expiresIn: process.env.TOKEN_EXPIRES_IN,
             },
         }),
+        CustomersModule,
+    ],
+    controllers: [
+        AuthController,
     ],
     providers: [
-        AuthService,
         RefreshTokenRepository,
         TokensService,
     ],
