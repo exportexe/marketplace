@@ -1,8 +1,8 @@
 {
   "name": "app",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Marketplace",
+  "author": "export.exe",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

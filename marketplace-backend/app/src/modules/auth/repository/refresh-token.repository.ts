@@ -25,6 +25,6 @@ export class RefreshTokenRepository {
     }
 
     async findTokenById(id: string): Promise<RefreshToken | null> {
-        return this._refreshTokenModel.findById(id);
+        return this._refreshTokenModel.findOne({id});
     }
 }

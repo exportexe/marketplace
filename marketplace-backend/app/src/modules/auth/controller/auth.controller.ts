@@ -1,10 +1,11 @@
-import {Body, Controller, Post, UnauthorizedException} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UnauthorizedException, UseGuards} from '@nestjs/common';
 
 import {CustomersService} from '../../customers/service/customers.service';
 import {TokensService} from '../service/tokens.service';
 import {Customer} from '../../customers/schema/customer.schema';
 import {LoginRequest, RefreshRequest, RegisterRequest} from '../../../shared/models/requests.model';
 import {AuthActionsPayload, AuthPayload} from '../models/auth-payload.model';
+import {JwtGuard} from '../guard/jwt.guard';
 
 const EXPIRES_IN = 60 * 60 * 24 * 30;
 const BEARER_TOKEN_TYPE = 'bearer';
@@ -16,6 +17,17 @@ export class AuthController {
 
     constructor(private readonly _customersService: CustomersService,
                 private readonly _tokensService: TokensService) {
+    }
+
+    @Get('/:id')
+    @UseGuards(JwtGuard)
+    async getCustomer(@Param('id') customerId: string): Promise<AuthActionsPayload> {
+        const customer: Customer = await this._customersService.findCustomerById(customerId);
+
+        return {
+            status: SUCCESS_TOKEN_TYPE,
+            data: customer,
+        };
     }
 
     @Post('/register')

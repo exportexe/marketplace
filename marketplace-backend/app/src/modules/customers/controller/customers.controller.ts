@@ -19,7 +19,7 @@ export class CustomersController {
     @Get(':id')
     @HttpCode(HttpStatus.ACCEPTED)
     async getCustomerById(@Param('id') id: string): Promise<Customer | null> {
-        return this._customersService.getCustomerById(id);
+        return this._customersService.findCustomerById(id);
     }
 
     @Post('create')

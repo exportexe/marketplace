@@ -28,7 +28,7 @@ export class CustomersService {
         return this._customersRepository.createNewCustomer(request);
     }
 
-    async getCustomerById(id: string): Promise<Customer | null> {
+    async findCustomerById(id: string): Promise<Customer | null> {
         return this._customersRepository.findCustomerById(id);
     }
 

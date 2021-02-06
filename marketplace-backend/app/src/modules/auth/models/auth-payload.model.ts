@@ -8,7 +8,7 @@ export type TokenPayload = {
 
 export type AuthActionsPayload = {
    status: string;
-   data: AuthPayload;
+   data: AuthPayload | Customer;
 };
 
 export interface AuthPayload {
