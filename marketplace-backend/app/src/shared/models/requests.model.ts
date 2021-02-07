@@ -18,8 +18,6 @@ export class LoginRequest {
 
 export class RegisterRequest {
 
-    id: string;
-
     @IsNotEmpty({message: USERNAME_IS_REQUIRED})
     readonly userName: string;
 
@@ -29,6 +27,8 @@ export class RegisterRequest {
 
     @IsNotEmpty({message: EMAIL_IS_REQUIRED})
     email: string;
+
+    id: string;
 
     readonly firstName: string;
 

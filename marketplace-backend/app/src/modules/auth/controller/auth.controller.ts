@@ -35,6 +35,7 @@ export class AuthController {
         const customer: Customer = await this._customersService.createCustomerFromRequest(body);
         const token: string = await this._tokensService.generateAccessToken(customer.id);
         const refreshToken: string = await this._tokensService.generateRefreshToken(customer.id, EXPIRES_IN);
+
         const payload: AuthPayload = AuthController._buildResponsePayload(customer, token, refreshToken);
 
         return {
@@ -52,8 +53,10 @@ export class AuthController {
             throw new UnauthorizedException(LOGIN_IS_INVALID);
         }
 
+        /* OAuth - Generating Access and Refresh tokens*/
         const token: string = await this._tokensService.generateAccessToken(customer.id);
         const refreshToken: string = await this._tokensService.generateRefreshToken(customer.id, EXPIRES_IN);
+
         const payload: AuthPayload = AuthController._buildResponsePayload(customer, token, refreshToken);
 
         return {
