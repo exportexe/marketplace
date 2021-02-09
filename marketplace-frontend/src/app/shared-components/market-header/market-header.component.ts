@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, ElementRef, HostListener, Renderer2, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, HostListener, Renderer2} from '@angular/core';
 
 declare var window;
 
@@ -7,8 +7,6 @@ const STICKY_HEADER_CLASS = 'market-header_sticky';
 @Component({
     selector: 'market-header',
     templateUrl: './market-header.component.html',
-    styleUrls: ['./market-header.component.less'],
-    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
         'class': 'market-header',
