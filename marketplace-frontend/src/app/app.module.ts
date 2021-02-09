@@ -6,10 +6,10 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
-import {MarketHeaderModule} from './shared-components/market-header/market-header.module';
+import {MarketHeaderModule} from '../shared/components/market-header/market-header.module';
 import {MarketHomeModule} from './pages/market-home/market-home.module';
-import {MarketFooterModule} from './shared-components/market-footer/market-footer.module';
-import {HttpLoaderFactory} from './utils/http-loader-factory';
+import {MarketFooterModule} from '../shared/components/market-footer/market-footer.module';
+import {HttpLoaderFactory} from '../shared/utils/http-loader-factory';
 
 const componentsModules = [
     MarketFooterModule,
