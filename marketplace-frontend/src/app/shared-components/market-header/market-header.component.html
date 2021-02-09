@@ -1,0 +1,22 @@
+<div class="market-header__wrapper">
+    <div class="market-header__end">
+        <a class="h4 market-header__end-link"
+           href="#"
+           [innerHTML]="'market-header.title' | translate | safeHtml">
+        </a>
+    </div>
+    <div class="market-header__menu"></div>
+    <div class="market-header__end market-header__end_right">
+        <button type="button"
+                role="button"
+                (click)="_signIn()">
+            {{'market-header.sign-in' | translate}}
+        </button>
+        <div class="market-header__end-divider"></div>
+        <button type="button"
+                role="button"
+                (click)="_signUp()">
+            {{'market-header.sign-up' | translate}}
+        </button>
+    </div>
+</div>
