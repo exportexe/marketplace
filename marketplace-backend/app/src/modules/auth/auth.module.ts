@@ -1,4 +1,4 @@
-import {CacheModule, Module} from '@nestjs/common';
+import {CacheModule, MiddlewareConsumer, Module, NestModule, RequestMethod} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {JwtModule} from '@nestjs/jwt';
 
@@ -8,10 +8,16 @@ import {RefreshToken, RefreshTokenSchema} from './schema/refresh-token.schema';
 import {AuthController} from './controller/auth.controller';
 import {CustomersModule} from '../customers/customers.module';
 import {JwtStrategy} from './strategy/jwt.strategy';
+import {LoggerMiddleware} from './middlewares/logger.middleware';
+
+const TTL = 60 * 60 * 24 * 30;
 
 @Module({
     imports: [
-        CacheModule.register(),
+        CacheModule.register({
+            ttl: TTL,
+            max: 150,
+        }),
         MongooseModule.forFeature([
             {
                 name: RefreshToken.name,
@@ -35,5 +41,16 @@ import {JwtStrategy} from './strategy/jwt.strategy';
         JwtStrategy,
     ],
 })
-export class AuthModule {
+export class AuthModule implements NestModule {
+
+    configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(LoggerMiddleware)
+            .forRoutes(
+                {
+                    path: 'api/auth/:id',
+                    method: RequestMethod.GET,
+                },
+            );
+    }
 }

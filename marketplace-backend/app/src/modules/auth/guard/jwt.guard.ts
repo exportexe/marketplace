@@ -6,11 +6,12 @@ const JWT = 'jwt';
 @Injectable()
 export class JwtGuard extends AuthGuard(JWT) {
 
-    handleRequest(err, user, info: Error) {
-        if (err || info || !user) {
+    handleRequest<Customer>(err: Error, customer: Customer, info: Error): Customer {
+
+        if (err || info || !customer) {
             throw err || info || new UnauthorizedException();
         }
 
-        return user;
+        return customer;
     }
 }

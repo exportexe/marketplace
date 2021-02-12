@@ -16,8 +16,8 @@ const EXPIRES_IN = 60 * 60 * 24 * 30;
 const BEARER_TOKEN_TYPE = 'bearer';
 const SUCCESS_TOKEN_TYPE = 'success';
 const LOGIN_IS_INVALID = 'LOGIN_IS_INVALID';
-const ACCESS_TOKEN = 'access-token-id';
-const REFRESH_TOKEN = 'refresh-token-id';
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 
 @Controller('/api/auth')
 @UseFilters(AuthExceptionFilter)
@@ -57,7 +57,7 @@ export class AuthController {
     }
 
     @Post('/login')
-    async login(@Body() body: LoginRequest, @Res({passthrough: true}) response: Response): Promise<string> {
+    async login(@Body() body: LoginRequest, @Res({passthrough: true}) response: Response): Promise<any> {
         const customer: Customer = await this._customersService.findCustomerByUserName(body.userName);
         const valid: boolean = customer && await this._customersService.validateCredentials(customer, body.password);
 
@@ -76,18 +76,26 @@ export class AuthController {
         );
 
         //return customerToDtoMapper(tokensPayload?.customer);
-        return tokensPayload.payload.token;
+        return tokensPayload;
     }
 
     @Post('/refresh')
-    async refresh(@Body() body: RefreshRequest): Promise<AuthActionsPayload> {
+    async refresh(@Body() body: RefreshRequest, @Res({passthrough: true}) response: Response): Promise<AuthActionsPayload> {
         const {customer, token} = await this._tokensService.createAccessTokenFromRefreshToken(body.refreshToken);
 
-        const payload: AuthPayload = AuthController._buildResponsePayload(customer, token);
+        const tokensPayload: AuthPayload = AuthController._buildResponsePayload(customer, token);
+        await this._cacheManager.set(ACCESS_TOKEN, tokensPayload?.payload?.token);
+        response.cookie(REFRESH_TOKEN, tokensPayload?.payload?.refresh_token, {
+                maxAge: EXPIRES_IN,
+                httpOnly: true,
+                path: process.env.COOKIE_PATH,
+                domain: process.env.DOMAIN,
+            },
+        );
 
         return {
             status: SUCCESS_TOKEN_TYPE,
-            data: payload,
+            data: tokensPayload,
         };
     }
 
@@ -97,11 +105,12 @@ export class AuthController {
         const payload: AuthPayload = AuthController._buildResponsePayload(customer, token, refreshToken);
         await this._cacheManager.set(ACCESS_TOKEN, payload?.payload?.token);
 
+        console.log(this._cacheManager.get(ACCESS_TOKEN));
+
         return payload;
     }
 
     private static _buildResponsePayload(customer: Customer, accessToken: string, refreshToken?: string): AuthPayload {
-
         return {
             customer,
             payload: {
