@@ -18,7 +18,10 @@ export class CustomersRepository {
     async createNewCustomer(registerRequest: RegisterRequest): Promise<Customer> {
         registerRequest.id = uuidv4();
         registerRequest.password = await hash(registerRequest.password, HASH_SALT);
-        registerRequest.email = await hash(registerRequest.email, HASH_SALT);
+
+        if (!registerRequest.age) {
+            registerRequest.age = 18;
+        }
 
         return new this._customerModel(registerRequest).save();
     }

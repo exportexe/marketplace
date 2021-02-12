@@ -1,5 +1,43 @@
 {
-    "market-header.title": "all<b>Share</b>",
+    "market-header.title": "all<b>Share</b><sup style='font-size: 14px'>©</sup>",
     "market-header.sign-in": "Sign In",
-    "market-header.sign-up": "Sign Up"
+    "market-header.sign-up": "Sign Up",
+    "market-header.sign-in-modal-title": "Sign In to your account",
+    "market-header.sign-in-modal-body-content": "<p>Thank you for signing in</p>",
+
+    "common-dialog.close": "Close",
+
+    "sign-in-dialog.title": "Sign In",
+    "sign-in-dialog.submit": "Login",
+    "sign-in-dialog.enter-your-username": "Username",
+    "sign-in-dialog.sign-in-with": "all<b>Share</b><sup style='font-size: 14px'>©</sup>",
+    "sign-in-dialog.required-validator": "This field is required",
+    "sign-in-dialog.username-pattern-validator": "Please enter a valid data",
+    "sign-in-dialog.password-label": "Password",
+    "sign-in-dialog.password-label.aria-label": "Hide password",
+    "sign-in-dialog.login-success": "Login Success",
+    "sign-in-dialog.login-error": "Login Unsuccessful",
+    "sign-in-dialog.login-error-message": "Please check your credentials!",
+    "sign-in-dialog.welcome": "Hi, {{userName}}!",
+    "sign-in-dialog.social-icon": "Social Icon",
+    "sign-in-dialog.not-registered": "Not registered?",
+    "sign-in-dialog.create-account": "Create an account",
+
+    "sign-up-dialog.title": "Sign Up",
+    "sign-up-dialog.sign-up": "Submit",
+    "sign-up-dialog.enter-your-username": "Username",
+    "sign-up-dialog.enter-your-first-name": "First name",
+    "sign-up-dialog.sign-up-with": "all<b>Share</b><sup style='font-size: 14px'>©</sup>",
+    "sign-up-dialog.required-validator": "This field is required",
+    "sign-up-dialog.username-pattern-validator": "Please enter a valid data",
+    "sign-up-dialog.password-label": "Password",
+    "sign-up-dialog.email-label": "E-Mail",
+    "sign-up-dialog.password-label.aria-label": "Hide password",
+    "sign-up-dialog.login-success": "Login Success",
+    "sign-up-dialog.login-error": "Login Unsuccessful",
+    "sign-up-dialog.login-error-message": "Please check your credentials!",
+    "sign-up-dialog.welcome": "Hi, {{userName}}!",
+    "sign-up-dialog.pattern-validator": "Username must be [8-20] characters long, contains [a-z A-Z 0-9], no '_' or '.' at the start/end",
+
+    "signing.max-value": "{{current}}/{{total}}"
 }

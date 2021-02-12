@@ -1,4 +1,9 @@
 import {ChangeDetectionStrategy, Component, ElementRef, HostListener, Renderer2} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {TranslateService} from '@ngx-translate/core';
+
+import {SignInDialogComponent} from '../sign-in-dialog/sign-in-dialog.component';
+import {SignUpDialogComponent} from '../sign-up-dialog/sign-up-dialog.component';
 
 declare var window;
 
@@ -15,7 +20,9 @@ const STICKY_HEADER_CLASS = 'market-header_sticky';
 export class MarketHeaderComponent {
 
     constructor(private _renderer: Renderer2,
-                private _elRef: ElementRef) {
+                private _elRef: ElementRef,
+                private _dialogService: MatDialog,
+                private _translateService: TranslateService) {
     }
 
     @HostListener('window:scroll', ['$event'])
@@ -25,12 +32,18 @@ export class MarketHeaderComponent {
 
     /** @internal */
     _signIn(): void {
-
+        this._dialogService.open(SignInDialogComponent, {
+            autoFocus: true,
+            minWidth: '640px',
+        });
     }
 
     /** @internal */
     _signUp(): void {
-
+        this._dialogService.open(SignUpDialogComponent, {
+            autoFocus: true,
+            minWidth: '640px',
+        });
     }
 
     private _checkHeaderPosition(): void {

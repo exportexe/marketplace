@@ -10,7 +10,7 @@ import {RefreshTokenPayload} from '../models/refresh-token-payload.model';
 
 const BASE_OPTIONS: SignOptions = {
     issuer: process.env.SERVER + process.env.PORT,
-    audience: process.env.SERVER + process.env.PORT,
+    audience: process.env.FRONTEND_SERVER + process.env.FRONTEND_PORT,
 };
 
 const REFRESH_TOKEN_EXPIRED = 'REFRESH TOKEN EXPIRED';

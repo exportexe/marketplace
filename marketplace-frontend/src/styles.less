@@ -1,4 +1,8 @@
-@import "shared/styles/shared-styles";
+/* 3rd Party Styles */
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '~ngx-toastr/toastr';
+
+@import "app/shared/styles/shared-styles";
 
 *,
 *::before,
@@ -15,15 +19,24 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-size: 16px;
+    line-height: 24px;
     .font-light();
 }
 
 a {
     text-decoration: none;
+    .font-regular();
 }
 
 b {
     .font-bold();
+}
+
+p {
+    padding: 0;
+    margin: 0;
+    .font-regular();
 }
 
 button {

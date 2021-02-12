@@ -5,7 +5,7 @@ export class AppService {
 
     getServerInfo(): string {
         return JSON.stringify({
-            Server: 'http://localhost:4000',
+            Server: process.env.SERVER + process.env.PORT,
             Status: 'Up',
             Source: 'https://github.com/exportexe/marketplace',
             Author: 'export.exe',

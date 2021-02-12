@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {CacheModule, Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {JwtModule} from '@nestjs/jwt';
 
@@ -7,9 +7,11 @@ import {TokensService} from './service/tokens.service';
 import {RefreshToken, RefreshTokenSchema} from './schema/refresh-token.schema';
 import {AuthController} from './controller/auth.controller';
 import {CustomersModule} from '../customers/customers.module';
+import {JwtStrategy} from './strategy/jwt.strategy';
 
 @Module({
     imports: [
+        CacheModule.register(),
         MongooseModule.forFeature([
             {
                 name: RefreshToken.name,
@@ -30,6 +32,7 @@ import {CustomersModule} from '../customers/customers.module';
     providers: [
         RefreshTokenRepository,
         TokensService,
+        JwtStrategy,
     ],
 })
 export class AuthModule {

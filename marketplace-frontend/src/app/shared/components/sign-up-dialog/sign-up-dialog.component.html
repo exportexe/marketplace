@@ -1,0 +1,104 @@
+<div mat-dialog-title>
+    <h2>{{'sign-up-dialog.title' | translate}}</h2>
+    <button mat-dialog-close
+            type="button"
+            role="button">
+        <mat-icon>{{'close'}}</mat-icon>
+    </button>
+</div>
+
+<div mat-dialog-content>
+    <div class="sign-up-dialog__left">
+        <div class="sign-up-dialog__left-company"
+             [style.background]="'url(' + _backgroundImageSrc + ') center no-repeat'"
+             [style.backgroundSize]="'cover'">
+            <h2 class="sign-up-dialog__left-text"
+                [innerHTML]="'sign-up-dialog.sign-up-with' | translate | safeHtml">
+            </h2>
+        </div>
+    </div>
+    <form class="sign-up-dialog__form"
+          [formGroup]="_signUpFormGroup"
+          (ngSubmit)="_signUp()">
+
+        <mat-form-field class="sign-up-dialog__full-width">
+            <mat-label>{{'sign-up-dialog.enter-your-first-name' | translate}}</mat-label>
+            <input #name
+                   matInput
+                   required
+                   type="text"
+                   maxlength="20"
+                   autocomplete="name"
+                   formControlName="firstName">
+            <mat-hint align="end">
+                {{'signing.max-value' | translate: {current: name.value?.length || 0, total: 20} }}
+            </mat-hint>
+            <mat-error *ngIf="_signUpFormGroup.get('firstName').invalid">
+                {{_getErrorMessage('firstName')}}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="sign-up-dialog__full-width">
+            <mat-label>{{'sign-up-dialog.enter-your-username' | translate}}</mat-label>
+            <input #userName
+                   matInput
+                   required
+                   type="text"
+                   maxlength="14"
+                   autocomplete="username"
+                   formControlName="userName">
+            <mat-hint align="end">
+                {{'signing.max-value' | translate: {current: userName.value?.length || 0, total: 14} }}
+            </mat-hint>
+            <mat-error *ngIf="_signUpFormGroup.get('userName').invalid">
+                {{_getErrorMessage('userName')}}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="sign-up-dialog__full-width">
+            <mat-label>{{'sign-up-dialog.email-label' | translate}}</mat-label>
+            <input matInput
+                   required
+                   type="email"
+                   maxlength="25"
+                   autocomplete="email"
+                   placeholder="all@share.com"
+                   formControlName="email">
+            <mat-error *ngIf="_signUpFormGroup.get('email').invalid">
+                {{_getErrorMessage('email')}}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="sign-up-dialog__full-width sign-up-dialog__input">
+            <mat-label>{{'sign-up-dialog.password-label' | translate}}</mat-label>
+            <input matInput
+                   required
+                   maxlength="16"
+                   type="password"
+                   autocomplete="current-password"
+                   formControlName="password"
+                   [type]="_isPasswordHidden ? 'password' : 'text'">
+            <button mat-icon-button
+                    matSuffix
+                    type="button"
+                    role="button"
+                    [attr.aria-label]="'sign-up-dialog.password-label.aria-label' | translate"
+                    [attr.aria-pressed]="_isPasswordHidden"
+                    (click)="_isPasswordHidden = !_isPasswordHidden">
+                <mat-icon>{{_isPasswordHidden ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="_signUpFormGroup.get('password').invalid">
+                {{_getErrorMessage('password', true)}}
+            </mat-error>
+        </mat-form-field>
+
+        <button class="sign-up-dialog__full-width"
+                mat-stroked-button
+                type="submit"
+                role="button"
+                [disabled]="_signUpFormGroup.invalid">
+            {{'sign-up-dialog.sign-up' | translate}}
+        </button>
+
+    </form>
+</div>

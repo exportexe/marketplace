@@ -1,0 +1,86 @@
+<div mat-dialog-title>
+    <h2>{{'sign-in-dialog.title' | translate}}</h2>
+    <button mat-dialog-close
+            type="button"
+            role="button">
+        <mat-icon>{{'close'}}</mat-icon>
+    </button>
+</div>
+
+<div mat-dialog-content>
+    <form class="sign-in-dialog__form"
+          [formGroup]="_signInFormGroup"
+          (ngSubmit)="_signIn()">
+
+        <mat-form-field class="sign-in-dialog__full-width">
+            <mat-label>{{'sign-in-dialog.enter-your-username' | translate}}</mat-label>
+            <input matInput
+                   required
+                   type="text"
+                   maxlength="14"
+                   autocomplete="username"
+                   formControlName="userName">
+            <mat-error *ngIf="_signInFormGroup.get('userName').invalid">
+                {{_getErrorMessageForUserName('userName')}}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="sign-in-dialog__full-width sign-in-dialog__input">
+            <mat-label>{{'sign-in-dialog.password-label' | translate}}</mat-label>
+            <input matInput
+                   required
+                   maxlength="16"
+                   type="password"
+                   autocomplete="current-password"
+                   formControlName="password"
+                   [type]="_isPasswordHidden ? 'password' : 'text'">
+            <button mat-icon-button
+                    matSuffix
+                    type="button"
+                    role="button"
+                    [attr.aria-label]="'sign-in-dialog.password-label.aria-label' | translate"
+                    [attr.aria-pressed]="_isPasswordHidden"
+                    (click)="_isPasswordHidden = !_isPasswordHidden">
+                <mat-icon>{{_isPasswordHidden ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="_signInFormGroup.get('password').invalid">
+                {{_getErrorMessageForUserName('password', true)}}
+            </mat-error>
+        </mat-form-field>
+
+        <button class="sign-in-dialog__full-width"
+                mat-stroked-button
+                type="submit"
+                role="button"
+                [disabled]="_signInFormGroup.invalid">
+            {{'sign-in-dialog.submit' | translate}}
+        </button>
+
+    </form>
+
+    <div class="sign-in-dialog__right">
+        <div class="sign-in-dialog__right-company">
+            <h2 [innerHTML]="'sign-in-dialog.sign-in-with' | translate | safeHtml"></h2>
+            <div class="sign-in-dialog__right-links">
+                <a *ngFor="let imageLink of _imageLinks; trackBy: _trackByImages"
+                   class="sign-in-dialog__right-icon"
+                   type="button"
+                   role="button"
+                   target="_blank"
+                   href="{{imageLink.link}}">
+                    <img src="{{imageLink.src}}"
+                         alt="{{'sign-in-dialog.social-icon' | translate}}">
+                </a>
+            </div>
+        </div>
+        <div class="sign-in-dialog__right-sign-up">
+            <p>{{'sign-in-dialog.not-registered' | translate}}</p>
+            <button class="sign-in-dialog__right-sign-up-button"
+                    type="button"
+                    role="button"
+                    (click)="_goToSignUp()">
+                {{'sign-in-dialog.create-account' | translate}}
+            </button>
+        </div>
+    </div>
+</div>

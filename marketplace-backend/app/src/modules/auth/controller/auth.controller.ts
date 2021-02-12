@@ -1,21 +1,30 @@
-import {Body, Controller, Get, Param, Post, UnauthorizedException, UseGuards} from '@nestjs/common';
+import {Body, CACHE_MANAGER, Controller, Get, Inject, Param, Post, Res, UnauthorizedException, UseFilters, UseGuards} from '@nestjs/common';
+import {Cache} from 'cache-manager';
+import {Response} from 'express';
 
 import {CustomersService} from '../../customers/service/customers.service';
 import {TokensService} from '../service/tokens.service';
 import {Customer} from '../../customers/schema/customer.schema';
 import {LoginRequest, RefreshRequest, RegisterRequest} from '../../../shared/models/requests.model';
 import {AuthActionsPayload, AuthPayload} from '../models/auth-payload.model';
+import {CustomerDto} from '../../customers/dto/customer.dto';
 import {JwtGuard} from '../guard/jwt.guard';
+import {AuthExceptionFilter} from '../filter/auth-exceptions.filter';
+import {customerToDtoMapper} from '../../customers/mappers/customer-to-dto.mapper';
 
 const EXPIRES_IN = 60 * 60 * 24 * 30;
 const BEARER_TOKEN_TYPE = 'bearer';
 const SUCCESS_TOKEN_TYPE = 'success';
 const LOGIN_IS_INVALID = 'LOGIN_IS_INVALID';
+const ACCESS_TOKEN = 'access-token-id';
+const REFRESH_TOKEN = 'refresh-token-id';
 
 @Controller('/api/auth')
+@UseFilters(AuthExceptionFilter)
 export class AuthController {
 
-    constructor(private readonly _customersService: CustomersService,
+    constructor(@Inject(CACHE_MANAGER) private _cacheManager: Cache,
+                private readonly _customersService: CustomersService,
                 private readonly _tokensService: TokensService) {
     }
 
@@ -31,21 +40,24 @@ export class AuthController {
     }
 
     @Post('/register')
-    async register(@Body() body: RegisterRequest): Promise<AuthActionsPayload> {
+    async register(@Body() body: RegisterRequest, @Res({passthrough: true}) response: Response): Promise<CustomerDto> {
         const customer: Customer = await this._customersService.createCustomerFromRequest(body);
-        const token: string = await this._tokensService.generateAccessToken(customer.id);
-        const refreshToken: string = await this._tokensService.generateRefreshToken(customer.id, EXPIRES_IN);
 
-        const payload: AuthPayload = AuthController._buildResponsePayload(customer, token, refreshToken);
+        /* OAuth - Generating Access and Refresh tokens*/
+        const tokensPayload: AuthPayload = await this._generateToken(customer);
+        response.cookie(REFRESH_TOKEN, tokensPayload?.payload?.refresh_token, {
+                maxAge: EXPIRES_IN,
+                httpOnly: true,
+                path: process.env.COOKIE_PATH,
+                domain: process.env.DOMAIN,
+            },
+        );
 
-        return {
-            status: SUCCESS_TOKEN_TYPE,
-            data: payload,
-        };
+        return customerToDtoMapper(tokensPayload?.customer);
     }
 
     @Post('/login')
-    async login(@Body() body: LoginRequest): Promise<AuthActionsPayload> {
+    async login(@Body() body: LoginRequest, @Res({passthrough: true}) response: Response): Promise<string> {
         const customer: Customer = await this._customersService.findCustomerByUserName(body.userName);
         const valid: boolean = customer && await this._customersService.validateCredentials(customer, body.password);
 
@@ -54,15 +66,17 @@ export class AuthController {
         }
 
         /* OAuth - Generating Access and Refresh tokens*/
-        const token: string = await this._tokensService.generateAccessToken(customer.id);
-        const refreshToken: string = await this._tokensService.generateRefreshToken(customer.id, EXPIRES_IN);
+        const tokensPayload: AuthPayload = await this._generateToken(customer);
+        response.cookie(REFRESH_TOKEN, tokensPayload?.payload?.refresh_token, {
+                maxAge: EXPIRES_IN,
+                httpOnly: true,
+                path: process.env.COOKIE_PATH,
+                domain: process.env.DOMAIN,
+            },
+        );
 
-        const payload: AuthPayload = AuthController._buildResponsePayload(customer, token, refreshToken);
-
-        return {
-            status: SUCCESS_TOKEN_TYPE,
-            data: payload,
-        };
+        //return customerToDtoMapper(tokensPayload?.customer);
+        return tokensPayload.payload.token;
     }
 
     @Post('/refresh')
@@ -77,7 +91,17 @@ export class AuthController {
         };
     }
 
+    private async _generateToken(customer: Customer): Promise<AuthPayload> {
+        const token: string = await this._tokensService.generateAccessToken(customer.id);
+        const refreshToken: string = await this._tokensService.generateRefreshToken(customer.id, EXPIRES_IN);
+        const payload: AuthPayload = AuthController._buildResponsePayload(customer, token, refreshToken);
+        await this._cacheManager.set(ACCESS_TOKEN, payload?.payload?.token);
+
+        return payload;
+    }
+
     private static _buildResponsePayload(customer: Customer, accessToken: string, refreshToken?: string): AuthPayload {
+
         return {
             customer,
             payload: {

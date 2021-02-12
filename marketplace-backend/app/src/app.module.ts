@@ -10,9 +10,9 @@ const mongoDB = process.env.mongoURI;
 
 @Module({
     imports: [
-        MongooseModule.forRoot(mongoDB),
-        CustomersModule,
         AuthModule,
+        CustomersModule,
+        MongooseModule.forRoot(mongoDB),
     ],
     controllers: [
         AppController,

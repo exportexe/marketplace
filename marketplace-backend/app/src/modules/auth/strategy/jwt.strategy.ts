@@ -15,8 +15,10 @@ const jwtPayload = {
     },
 };
 
+const JWT = 'jwt';
+
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, JWT) {
 
     constructor(private readonly _customersService: CustomersService) {
         super(jwtPayload);
