@@ -44,11 +44,11 @@
                    matInput
                    required
                    type="text"
-                   maxlength="14"
+                   maxlength="16"
                    autocomplete="username"
                    formControlName="userName">
             <mat-hint align="end">
-                {{'signing.max-value' | translate: {current: userName.value?.length || 0, total: 14} }}
+                {{'signing.max-value' | translate: {current: userName.value?.length || 0, total: 16} }}
             </mat-hint>
             <mat-error *ngIf="_signUpFormGroup.get('userName').invalid">
                 {{_getErrorMessage('userName')}}

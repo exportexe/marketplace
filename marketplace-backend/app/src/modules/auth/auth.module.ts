@@ -10,13 +10,14 @@ import {CustomersModule} from '../customers/customers.module';
 import {JwtStrategy} from './strategy/jwt.strategy';
 import {LoggerMiddleware} from './middlewares/logger.middleware';
 
-const TTL = 60 * 60 * 24 * 30;
+const TTL: number = 60 * 60 * 24 * 30;
+const MAX_CACHE_VOLUME: number = Number(process.env.MAX_CACHE_VOLUME);
 
 @Module({
     imports: [
         CacheModule.register({
             ttl: TTL,
-            max: 150,
+            max: MAX_CACHE_VOLUME,
         }),
         MongooseModule.forFeature([
             {
@@ -48,8 +49,8 @@ export class AuthModule implements NestModule {
             .apply(LoggerMiddleware)
             .forRoutes(
                 {
-                    path: 'api/auth/:id',
-                    method: RequestMethod.GET,
+                    path: 'api/auth/account',
+                    method: RequestMethod.POST,
                 },
             );
     }

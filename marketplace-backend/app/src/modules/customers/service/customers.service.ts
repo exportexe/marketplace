@@ -5,7 +5,7 @@ import {Customer} from '../schema/customer.schema';
 import {CustomersRepository} from '../repository/customers.repository';
 import {RegisterRequest} from '../../../shared/models/requests.model';
 
-const USERNAME_EXISTS = 'USERNAME ALREADY IN USE';
+const USER_EXISTS = 'USERNAME OR EMAIL ALREADY IN USE';
 
 @Injectable()
 export class CustomersService {
@@ -22,7 +22,7 @@ export class CustomersService {
         const existingCustomerEMail: Customer = await this.findCustomerByEmail(request.email);
 
         if (existingCustomerUserName || existingCustomerEMail) {
-            throw new UnprocessableEntityException(USERNAME_EXISTS);
+            throw new UnprocessableEntityException(USER_EXISTS);
         }
 
         return this._customersRepository.createNewCustomer(request);

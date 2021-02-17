@@ -25,12 +25,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, JWT) {
     }
 
     async validate(payload: AccessTokenPayload): Promise<Customer> {
-        const customer: Customer = await this._customersService.findCustomerById(payload.sub);
-
-        if (!customer) {
-            return null;
-        }
-
-        return customer;
+        return await this._customersService.findCustomerById(payload.sub);
     }
 }

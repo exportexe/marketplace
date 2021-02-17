@@ -85,6 +85,7 @@ export class SignInDialogComponent implements OnInit, OnDestroy {
                 }),
             ).subscribe(
                 (customer: Customer) => {
+                    this._authService.changeCustomerInfo(customer);
                     this._toastService.success(
                         this._translateService.instant('sign-in-dialog.welcome', {
                             userName: customer.userName,

@@ -5,12 +5,10 @@ import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ToastrService} from 'ngx-toastr';
+import {finalize} from 'rxjs/operators';
 
 import {CommonDialog} from '../../models/common-dialog.model';
 import {
-    AGE_MAX_LENGTH,
-    AGE_MIN_LENGTH,
-    AGE_VALIDATOR,
     FIRST_NAME_LENGTH,
     FIRST_NAME_VALIDATOR,
     PASSWORD_MAX_LENGTH,
@@ -20,7 +18,6 @@ import {
 } from '../../constants/validators';
 import {AuthorizationService} from '../../services/authorization.service';
 import {Customer} from '../../models/authorization/customer.model';
-import {finalize} from 'rxjs/operators';
 
 @Component({
     selector: 'sign-up-dialog',
@@ -76,6 +73,7 @@ export class SignUpDialogComponent implements OnInit, OnDestroy {
                 }),
             ).subscribe(
                 (customer: Customer) => {
+                    this._authService.changeCustomerInfo(customer);
                     this._toastService.success(
                         this._translateService.instant('sign-up-dialog.welcome', {
                             userName: customer.userName,

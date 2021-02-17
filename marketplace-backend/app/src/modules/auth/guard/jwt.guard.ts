@@ -7,9 +7,8 @@ const JWT = 'jwt';
 export class JwtGuard extends AuthGuard(JWT) {
 
     handleRequest<Customer>(err: Error, customer: Customer, info: Error): Customer {
-
         if (err || info || !customer) {
-            throw err || info || new UnauthorizedException();
+            throw new UnauthorizedException;
         }
 
         return customer;

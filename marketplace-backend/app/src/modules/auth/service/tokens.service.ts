@@ -70,8 +70,8 @@ export class TokensService {
         };
     }
 
-    async createAccessTokenFromRefreshToken(refresh: string): Promise<{ token: string, customer: Customer }> {
-        const {customer} = await this.resolveRefreshToken(refresh);
+    async createAccessTokenFromRefreshToken(refreshToken: string): Promise<{ token: string, customer: Customer }> {
+        const {customer} = await this.resolveRefreshToken(refreshToken);
         const token: string = await this.generateAccessToken(customer.id);
 
         return {
