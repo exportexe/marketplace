@@ -20,8 +20,8 @@ const COMPONENTS_MODULES = [
     MarketHeaderModule,
 ];
 
-const TOAST_TIMEOUT = 5000;
-const TOAST_POSITION = 'toast-top-right';
+const TOAST_TIMEOUT: number = 5000;
+const TOAST_POSITION: string = 'toast-top-right';
 
 @NgModule({
     imports: [

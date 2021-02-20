@@ -4,9 +4,11 @@
     "market-header.sign-up": "Sign Up",
     "market-header.sign-in-modal-title": "Sign In to your account",
     "market-header.sign-in-modal-body-content": "<p>Thank you for signing in</p>",
-
+    "market-header.customer-info": "Hi, {{userName}}",
+    "market-header.account": "Account",
+    "market-header.exit": "Exit",
+    "market-footer.info": "<span style='font-size: 12px'>© </span> 2021 all<b>Share</b>. All rights reserved",
     "common-dialog.close": "Close",
-
     "sign-in-dialog.title": "Sign In",
     "sign-in-dialog.submit": "Login",
     "sign-in-dialog.enter-your-username": "Username",
@@ -22,7 +24,6 @@
     "sign-in-dialog.social-icon": "Social Icon",
     "sign-in-dialog.not-registered": "Not registered?",
     "sign-in-dialog.create-account": "Create an account",
-
     "sign-up-dialog.title": "Sign Up",
     "sign-up-dialog.sign-up": "Submit",
     "sign-up-dialog.enter-your-username": "Username",
@@ -38,6 +39,5 @@
     "sign-up-dialog.login-error-message": "Please check your credentials!",
     "sign-up-dialog.welcome": "Hi, {{userName}}!",
     "sign-up-dialog.pattern-validator": "Username must be [8-20] characters long, contains [a-z A-Z 0-9], no '_' or '.' at the start/end",
-
     "signing.max-value": "{{current}}/{{total}}"
 }

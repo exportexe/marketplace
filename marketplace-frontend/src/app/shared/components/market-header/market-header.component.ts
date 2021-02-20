@@ -2,9 +2,9 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostL
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
-import {CookieService} from 'ngx-cookie-service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {finalize} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 import {SignInDialogComponent} from '../sign-in-dialog/sign-in-dialog.component';
 import {SignUpDialogComponent} from '../sign-up-dialog/sign-up-dialog.component';
@@ -18,26 +18,29 @@ const STICKY_HEADER_CLASS: string = 'market-header_sticky';
 @Component({
     selector: 'market-header',
     templateUrl: './market-header.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
         'class': 'market-header',
     },
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MarketHeaderComponent implements OnInit, OnDestroy {
 
     /** @internal */
     _customerInfo: Customer;
 
+    /** @internal */
+    _isArrowDown: boolean;
+
     private _subs: Subscription[] = [];
 
-    constructor(private _renderer: Renderer2,
-                private _elRef: ElementRef,
-                private _dialogService: MatDialog,
-                private _translateService: TranslateService,
-                private _authService: AuthorizationService,
-                private _cookieService: CookieService,
-                private _spinnerService: NgxSpinnerService,
-                private _cdr: ChangeDetectorRef) {
+    constructor(private readonly _renderer: Renderer2,
+                private readonly _elRef: ElementRef,
+                private readonly _dialogService: MatDialog,
+                private readonly _translateService: TranslateService,
+                private readonly _authService: AuthorizationService,
+                private readonly _spinnerService: NgxSpinnerService,
+                private readonly _cdr: ChangeDetectorRef,
+                private readonly _router: Router) {
     }
 
     @HostListener('window:scroll', ['$event'])
@@ -67,6 +70,29 @@ export class MarketHeaderComponent implements OnInit, OnDestroy {
             autoFocus: true,
             minWidth: '640px',
         });
+    }
+
+    /** @internal */
+    _changeArrowState(): void {
+        this._isArrowDown = !this._isArrowDown;
+    }
+
+    /** @internal */
+    async _goToAccountPage(): Promise<void> {
+        await this._router.navigate(['/account']);
+    }
+
+    /** @internal */
+    _logout(): void {
+        this._spinnerService.show();
+        this._subs.push(
+            this._authService.logout()
+                .pipe(finalize(() => this._spinnerService.hide()))
+                .subscribe(() => {
+                    this._authService.changeCustomerInfo(null);
+                    this._router.navigateByUrl('/home');
+                }),
+        );
     }
 
     private _checkHeaderPosition(): void {

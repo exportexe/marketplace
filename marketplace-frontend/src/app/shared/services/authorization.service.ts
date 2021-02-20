@@ -42,7 +42,7 @@ export class AuthorizationService {
     }
 
     public logout(): Observable<void> {
-        return this._http.get<void>(BACKEND_SERVER + LOGOUT, {
+        return this._http.post<void>(BACKEND_SERVER + LOGOUT, {}, {
             withCredentials: true,
         });
     }

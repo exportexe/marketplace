@@ -26,10 +26,18 @@ import {customerToDtoMapper} from '../../customers/mappers/customer-to-dto.mappe
 
 const EXPIRES_IN = 60 * 60 * 24 * 30;
 const LOGIN_IS_INVALID = 'LOGIN_IS_INVALID';
+
 const BEARER_TOKEN_TYPE = process.env.BEARER;
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const CUSTOMER_INFO = process.env.CUSTOMER_INFO;
+
+const COOKIE_OPTIONS = {
+    httpOnly: true,
+    maxAge: EXPIRES_IN,
+    path: process.env.COOKIE_PATH,
+    domain: process.env.DOMAIN,
+};
 
 @Controller('/api/auth')
 @UseFilters(AuthExceptionFilter)
@@ -91,6 +99,14 @@ export class AuthController {
         return customerToDtoMapper(tokensPayload?.customer);
     }
 
+    @Post('/logout')
+    async logout(@Res({passthrough: true}) response: Response): Promise<void> {
+        await this._cacheManager.del(ACCESS_TOKEN);
+        await this._cacheManager.del(REFRESH_TOKEN);
+        await this._cacheManager.del(CUSTOMER_INFO);
+        response.clearCookie(REFRESH_TOKEN, COOKIE_OPTIONS);
+    }
+
     private async _generateToken(customer: Customer, response: Response): Promise<AuthPayload> {
         const token: string = await this._tokensService.generateAccessToken(customer.id);
         const refreshToken: string = await this._tokensService.generateRefreshToken(customer.id, EXPIRES_IN);
@@ -107,13 +123,7 @@ export class AuthController {
     }
 
     private static _setRefreshTokenToCookie(response: Response, refreshToken: string): void {
-        response.cookie(REFRESH_TOKEN, refreshToken, {
-                httpOnly: true,
-                maxAge: EXPIRES_IN,
-                path: process.env.COOKIE_PATH,
-                domain: process.env.DOMAIN,
-            },
-        );
+        response.cookie(REFRESH_TOKEN, refreshToken, COOKIE_OPTIONS);
     }
 
     private static _buildResponsePayload(customer: Customer, accessToken: string, refreshToken?: string): AuthPayload {

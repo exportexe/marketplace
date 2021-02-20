@@ -11,6 +11,14 @@ const routes: Routes = [
         path: 'home',
         loadChildren: () => import('./pages/market-home/market-home.module').then(m => m.MarketHomeModule),
     },
+    {
+        path: 'account',
+        loadChildren: () => import('./pages/market-account/market-account.module').then(m => m.MarketAccountModule),
+    },
+    {
+        path: '**',
+        redirectTo: '/home',
+    },
 ];
 
 @NgModule({

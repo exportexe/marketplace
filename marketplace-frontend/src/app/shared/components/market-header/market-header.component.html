@@ -8,7 +8,28 @@
     <div class="market-header__menu"></div>
     <div class="market-header__end market-header__end_right">
         <ng-container *ngIf="_customerInfo else noCustomerInfoTemplate">
-            <p>Hi, {{_customerInfo.userName}}</p>
+            <button class="market-header__end-button"
+                    type="button"
+                    role="button"
+                    [matMenuTriggerFor]="menu"
+                    (onMenuClose)="_changeArrowState()"
+                    (click)="_changeArrowState()">
+                {{'market-header.customer-info' | translate: {userName: _customerInfo.userName} }}
+                <span class="material-icons md-light market-header__end_arrow"
+                      [class.market-header__end_arrow-up]="_isArrowDown">
+                    arrow_drop_down
+                </span>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item
+                        (click)="_goToAccountPage()">
+                    {{'market-header.account' | translate}}
+                </button>
+                <button mat-menu-item
+                        (click)="_logout()">
+                    {{'market-header.exit' | translate}}
+                </button>
+            </mat-menu>
         </ng-container>
     </div>
 </div>

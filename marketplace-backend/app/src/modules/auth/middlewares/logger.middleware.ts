@@ -24,7 +24,7 @@ export class LoggerMiddleware implements NestMiddleware {
         if (accessToken) {
             req.headers.authorization = BEARER + accessToken;
         } else if (refreshToken) {
-            await this._getAccessTokenAndCustomer(refreshToken);
+            await this._getAccessTokenAndCustomer(refreshToken, req);
         } else {
             throw new HttpException(AUTH_ERROR, HttpStatus.NO_CONTENT);
         }
@@ -32,9 +32,10 @@ export class LoggerMiddleware implements NestMiddleware {
         next();
     }
 
-    private async _getAccessTokenAndCustomer(refreshToken: string): Promise<void> {
+    private async _getAccessTokenAndCustomer(refreshToken: string, req: Request): Promise<void> {
         const {customer, token} = await this._tokensService.createAccessTokenFromRefreshToken(refreshToken);
         await this._cacheManager.set(CUSTOMER_INFO, customer);
         await this._cacheManager.set(ACCESS_TOKEN, token);
+        req.headers.authorization = BEARER + token;
     }
 }
