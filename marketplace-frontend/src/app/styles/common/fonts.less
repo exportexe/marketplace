@@ -1,0 +1,31 @@
+.font-light() {
+    font-family: 'Oswald', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+}
+
+.font-regular() {
+    font-family: 'Oswald', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.font-bold() {
+    font-family: 'Oswald', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+}
+
+.font {
+    &_light {
+        .font-light();
+    }
+
+    &_regular {
+        .font-regular();
+    }
+
+    &_bold {
+        .font-bold();
+    }
+}

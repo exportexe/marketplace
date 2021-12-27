@@ -1,0 +1,14 @@
+.font-face(@file-name, @font-family, @font-weight: 300, @font-style: normal) {
+    @font-face {
+        font-family: "@{font-family}";
+        src: local("@{font-family}"), url("../../../assets/fonts/@{file-name}.ttf") format('ttf'),
+        local("@{font-family}"), url("../../../assets/fonts/@{file-name}.ttf") format('ttf');
+        font-display: swap;
+        font-weight: @font-weight;
+        font-style: @font-style;
+    }
+}
+
+.font-face(Oswald-Light, 'Oswald', 300);
+.font-face(Oswald-Regular, 'Oswald', 400);
+.font-face(Oswald-Bold, 'Oswald', 700);

@@ -1,4 +1,4 @@
-import {CACHE_MANAGER, HttpException, HttpStatus, Inject, Injectable, NestMiddleware} from '@nestjs/common';
+import {CACHE_MANAGER, Inject, Injectable, NestMiddleware} from '@nestjs/common';
 import {NextFunction, Request, Response} from 'express';
 import {Cache} from 'cache-manager';
 
@@ -8,7 +8,6 @@ const BEARER = process.env.BEARER + ' ';
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const CUSTOMER_INFO = process.env.CUSTOMER_INFO;
-const AUTH_ERROR = 'You are not authorised!';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
@@ -25,8 +24,6 @@ export class LoggerMiddleware implements NestMiddleware {
             req.headers.authorization = BEARER + accessToken;
         } else if (refreshToken) {
             await this._getAccessTokenAndCustomer(refreshToken, req);
-        } else {
-            throw new HttpException(AUTH_ERROR, HttpStatus.NO_CONTENT);
         }
 
         next();

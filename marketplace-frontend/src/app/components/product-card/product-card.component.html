@@ -1,0 +1,30 @@
+<div class="" style="display: flex; width: 200px; height: 200px; justify-content: center; align-items: center;">
+    <img [src]="product.imageSrc"
+         [alt]="product.imageAlt">
+</div>
+
+<div class="" style="display: flex; flex-direction: column; width: 100%; justify-content: flex-start;">
+
+    <div class="" style="margin: 32px 0 24px; display: flex; width: 100%; align-items: center; justify-content: space-between;">
+        <span>Reviews: ☆☆☆☆☆</span>
+        <p>$100</p>
+    </div>
+
+    <b style="font-size: 24px; line-height: 32px;">{{product.name + ' ' + product.brand}}</b>
+
+    <p style="margin: 24px 0 16px;">{{product.description}}</p>
+
+    <div class="" style="display: flex; width: 100%; align-items: center; justify-content: space-between;">
+
+        <button class=""
+                style="display: flex; justify-content: center; align-items: center; width: 50px; height: 50px; border-radius: 50%; background-color: #efefef;">
+            <mat-icon>{{'favorite_border'}}</mat-icon>
+        </button>
+
+        <button style="display: flex; width: 128px; height: 50px; border-radius: 24px; padding: 8px; align-items: center; justify-content: center; background-color: #efefef;">
+            Add to cart
+            <mat-icon style="padding-left: 8px;">{{'add_shopping_cart'}}</mat-icon>
+        </button>
+
+    </div>
+</div>

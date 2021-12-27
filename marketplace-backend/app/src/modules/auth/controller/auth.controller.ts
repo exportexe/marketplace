@@ -2,6 +2,7 @@ import {
     Body,
     CACHE_MANAGER,
     Controller,
+    Get,
     HttpCode,
     HttpStatus,
     Inject,
@@ -48,6 +49,11 @@ export class AuthController {
                 private readonly _tokensService: TokensService) {
     }
 
+    @Get('/loggedIn')
+    async isAuthenticated(): Promise<boolean> {
+        return true;
+    }
+
     @Post('/account')
     @UseGuards(JwtGuard)
     @HttpCode(HttpStatus.OK)
@@ -83,7 +89,7 @@ export class AuthController {
             throw new UnauthorizedException(LOGIN_IS_INVALID);
         }
 
-        /* OAuth - Generating Access and Refresh tokens*/
+        /* OAuth - Generating Access and Refresh tokens */
         const tokensPayload: AuthPayload = await this._generateToken(customer, response);
 
         return customerToDtoMapper(tokensPayload?.customer);

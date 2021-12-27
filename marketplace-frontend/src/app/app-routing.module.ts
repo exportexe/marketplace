@@ -1,6 +1,8 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
+import {AccountAuthGuard} from './guards/auth.guard';
+
 const routes: Routes = [
     {
         path: '',
@@ -9,11 +11,12 @@ const routes: Routes = [
     },
     {
         path: 'home',
-        loadChildren: () => import('./pages/market-home/market-home.module').then(m => m.MarketHomeModule),
+        loadChildren: () => import('./modules/market-home/market-home.module').then(m => m.MarketHomeModule),
     },
     {
         path: 'account',
-        loadChildren: () => import('./pages/market-account/market-account.module').then(m => m.MarketAccountModule),
+        canActivate: [AccountAuthGuard],
+        loadChildren: () => import('./modules/market-account/market-account.module').then(m => m.MarketAccountModule),
     },
     {
         path: '**',
@@ -27,6 +30,9 @@ const routes: Routes = [
     ],
     exports: [
         RouterModule,
+    ],
+    providers: [
+        AccountAuthGuard,
     ],
 })
 export class AppRoutingModule {
