@@ -3,8 +3,8 @@ import {MongooseModule} from '@nestjs/mongoose';
 
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
-import {CustomersModule} from './modules/customers/customers.module';
-import {AuthModule} from './modules/auth/auth.module';
+import {AuthModule, CustomersModule} from './module';
+
 const APP_MODULES = [
     AuthModule,
     CustomersModule,

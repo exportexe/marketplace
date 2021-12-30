@@ -4,8 +4,8 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {tap} from 'rxjs/operators';
 
 import {environment} from '../environments/environment';
-import {AuthorizationService} from './services';
-import {Customer} from './models';
+import {AuthorizationService} from './service';
+import {Customer} from './model';
 
 @UntilDestroy()
 @Component({

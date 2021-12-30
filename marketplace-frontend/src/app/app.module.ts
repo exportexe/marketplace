@@ -10,11 +10,11 @@ import {ToastrModule} from 'ngx-toastr';
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
-import {MarketHeaderModule} from './components/market-header/market-header.module';
-import {MarketFooterModule} from './components/market-footer/market-footer.module';
-import {HttpLoaderFactory} from './utils';
-import {MissingTranslationService} from './services';
-import {AuthInterceptor} from './interceptors';
+import {MarketHeaderModule} from './component/market-header/market-header.module';
+import {MarketFooterModule} from './component/market-footer/market-footer.module';
+import {HttpLoaderFactory} from './util';
+import {MissingTranslationService} from './service';
+import {AuthInterceptor} from './interceptor';
 
 const COMPONENTS_MODULES = [
     MarketFooterModule,

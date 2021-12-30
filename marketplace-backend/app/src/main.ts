@@ -2,9 +2,10 @@ import {NestFactory} from '@nestjs/core';
 import {Logger} from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
-import flash = require('connect-flash');
 
 import {AppModule} from './app.module';
+import {addAuthHeader} from './middleware';
+import flash = require('connect-flash');
 
 const PORT = process.env.PORT;
 
@@ -19,6 +20,7 @@ async function bootstrap(): Promise<void> {
     app.use(bodyParser.json());
     app.use(cookieParser());
     app.use(flash());
+    app.use(addAuthHeader);
 
     await app.listen(PORT);
 
