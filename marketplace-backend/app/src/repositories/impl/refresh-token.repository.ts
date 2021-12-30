@@ -3,12 +3,14 @@ import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
 import {v4 as uuidv4} from 'uuid';
 
-import {RefreshToken, RefreshTokenDocument} from '../schema/refresh-token.schema';
+import {RefreshToken, RefreshTokenDocument} from '../../schemas/refresh-token.schema';
+import {AbstractRefreshTokenRepository} from '../abstract-refresh-token.repository';
 
 @Injectable()
-export class RefreshTokenRepository {
+export class RefreshTokenRepository extends AbstractRefreshTokenRepository {
 
     constructor(@InjectModel(RefreshToken.name) private _refreshTokenModel: Model<RefreshTokenDocument>) {
+        super();
     }
 
     async createRefreshToken(customerId: string, ttl: number): Promise<RefreshToken> {

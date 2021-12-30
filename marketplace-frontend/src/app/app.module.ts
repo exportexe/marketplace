@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {APP_BASE_HREF} from '@angular/common';
 import {BrowserModule} from '@angular/platform-browser';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {MissingTranslationHandler, TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
@@ -14,6 +14,7 @@ import {MarketHeaderModule} from './components/market-header/market-header.modul
 import {MarketFooterModule} from './components/market-footer/market-footer.module';
 import {HttpLoaderFactory} from './utils';
 import {MissingTranslationService} from './services';
+import {AuthInterceptor} from './interceptors';
 
 const COMPONENTS_MODULES = [
     MarketFooterModule,
@@ -62,6 +63,11 @@ const COMPONENTS_MODULES = [
         {
             provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
             useValue: {appearance: 'outline'},
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true,
         },
     ],
 })

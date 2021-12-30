@@ -4,20 +4,21 @@ import {Model} from 'mongoose';
 import {hash} from 'bcrypt';
 import {v4 as uuidv4} from 'uuid';
 
-import {Customer, CustomerDocument} from '../schema/customer.schema';
-import {RegisterRequest} from '../../../shared/models/requests.model';
-
-const HASH_SALT = 10;
+import {Customer, CustomerDocument} from '../../schemas/customer.schema';
+import {RegisterRequest} from '../../models/requests.model';
+import {AbstractCustomersRepository} from '../abstract-customers.repository';
 
 @Injectable()
-export class CustomersRepository {
+export class CustomersRepository extends AbstractCustomersRepository {
 
     constructor(@InjectModel(Customer.name) private _customerModel: Model<CustomerDocument>) {
+        super();
     }
 
     async createNewCustomer(registerRequest: RegisterRequest): Promise<Customer> {
+        const hashSalt: number = 10;
         registerRequest.id = uuidv4();
-        registerRequest.password = await hash(registerRequest.password, HASH_SALT);
+        registerRequest.password = await hash(registerRequest.password, hashSalt);
 
         if (!registerRequest.age) {
             registerRequest.age = 18;

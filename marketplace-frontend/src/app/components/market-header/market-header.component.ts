@@ -1,17 +1,16 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, OnInit, Renderer2} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, Renderer2} from '@angular/core';
 import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {Observable} from 'rxjs';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {finalize, tap} from 'rxjs/operators';
+import {finalize} from 'rxjs/operators';
 
 import {SignInDialogComponent} from '../sign-in-dialog/sign-in-dialog.component';
 import {SignUpDialogComponent} from '../sign-up-dialog/sign-up-dialog.component';
-import {AuthorizationService} from '../../services/authorization.service';
+import {AuthorizationService} from '../../services';
 import {Customer} from '../../models';
-import {watchSubject} from '../../operators';
 
 @UntilDestroy()
 @Component({
@@ -19,22 +18,16 @@ import {watchSubject} from '../../operators';
     templateUrl: './market-header.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MarketHeaderComponent implements OnInit {
+export class MarketHeaderComponent {
 
     @HostBinding('class.market-header')
-    public class: boolean = true;
+    class: boolean = true;
 
-    public _customerInfo: Customer;
+    /** @internal */
+    _isArrowDown: boolean;
 
-    public _isArrowDown: boolean;
-
-    public get _selectCustomerInfo$(): Observable<Customer> {
-        this._spinnerService.show();
-
-        return this._authService
-            .getCustomerInfo()
-            .pipe(finalize(() => this._spinnerService.hide()));
-    }
+    /** @internal */
+    _selectCustomerInfo$: Observable<Customer> = this._authService.onCustomerInfoChanged$;
 
     constructor(private _renderer: Renderer2,
                 private _elRef: ElementRef,
@@ -46,18 +39,7 @@ export class MarketHeaderComponent implements OnInit {
                 private _router: Router) {
     }
 
-    /* TODO (mipa): To cover this case Akita can be used */
-    ngOnInit(): void {
-        this._authService
-            .onCustomerInfoChanged
-            .pipe(
-                tap((customer: Customer) => this._customerInfo = customer),
-                watchSubject(this._cdr),
-                untilDestroyed(this),
-            )
-            .subscribe();
-    }
-
+    /** @internal */
     _signIn(): void {
         this._dialogService.open<SignInDialogComponent>(SignInDialogComponent, {
             autoFocus: true,
@@ -65,6 +47,7 @@ export class MarketHeaderComponent implements OnInit {
         });
     }
 
+    /** @internal */
     _signUp(): void {
         this._dialogService.open<SignUpDialogComponent>(SignUpDialogComponent, {
             autoFocus: true,
@@ -72,22 +55,25 @@ export class MarketHeaderComponent implements OnInit {
         });
     }
 
+    /** @internal */
     _changeArrowState(): void {
         this._isArrowDown = !this._isArrowDown;
     }
 
+    /** @internal */
     _goToAccountPage(): void {
         this._router.navigate(['/account']);
     }
 
+    /** @internal */
     _logout(): void {
         this._spinnerService.show();
 
         this._authService
             .logout()
             .pipe(
-                finalize(() => this._spinnerService.hide()),
                 untilDestroyed(this),
+                finalize(() => this._spinnerService.hide()),
             )
             .subscribe(() => {
                 this._authService.changeCustomerInfo(null);

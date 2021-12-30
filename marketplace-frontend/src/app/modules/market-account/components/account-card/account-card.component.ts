@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, HostBinding, Input, ViewEncapsulation} from '@angular/core';
-import {Customer} from '../../../../models/authorization/customer.model';
+
+import {Customer} from '../../../../models';
 
 @Component({
     selector: 'account-card',

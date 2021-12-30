@@ -5,7 +5,7 @@ import {AppService} from './app.service';
 @Controller()
 export class AppController {
 
-    constructor(private readonly _appService: AppService) {
+    constructor(private _appService: AppService) {
     }
 
     @Get()

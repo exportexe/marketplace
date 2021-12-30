@@ -2,28 +2,26 @@ import {Injectable, UnprocessableEntityException} from '@nestjs/common';
 import {JwtService} from '@nestjs/jwt';
 import {SignOptions, TokenExpiredError} from 'jsonwebtoken';
 
-import {RefreshTokenRepository} from '../repository/refresh-token.repository';
-import {CustomersRepository} from '../../customers/repository/customers.repository';
-import {Customer} from '../../customers/schema/customer.schema';
-import {RefreshToken} from '../schema/refresh-token.schema';
-import {RefreshTokenPayload} from '../models/refresh-token-payload.model';
+import {Customer} from '../../schemas/customer.schema';
+import {RefreshToken} from '../../schemas/refresh-token.schema';
+import {RefreshTokenPayload} from '../../models/refresh-token-payload.model';
+import {AbstractCustomersRepository} from '../../repositories/abstract-customers.repository';
+import {AbstractTokensService} from '../abstract-tokens.service';
+import {AbstractRefreshTokenRepository} from '../../repositories/abstract-refresh-token.repository';
 
 const BASE_OPTIONS: SignOptions = {
-    issuer: process.env.SERVER + process.env.PORT,
-    audience: process.env.FRONTEND_SERVER + process.env.FRONTEND_PORT,
+    issuer: `${process.env.SERVER}${process.env.PORT}`,
+    audience: `${process.env.FRONTEND_SERVER}${process.env.FRONTEND_PORT}`,
 };
-
-const REFRESH_TOKEN_EXPIRED = 'REFRESH TOKEN EXPIRED';
-const REFRESH_TOKEN_MALFORMED = 'REFRESH TOKEN MALFORMED';
-const REFRESH_TOKEN_NOT_FOUND = 'REFRESH TOKEN NOT FOUND';
-const REFRESH_TOKEN_REVOKED = 'REFRESH TOKEN IS REVOKED';
+const REFRESH_TOKEN_MALFORMED: string = 'REFRESH TOKEN MALFORMED';
 
 @Injectable()
-export class TokensService {
+export class TokensService extends AbstractTokensService {
 
-    constructor(private readonly _tokensRepository: RefreshTokenRepository,
-                private readonly _jwtService: JwtService,
-                private readonly _customersRepository: CustomersRepository) {
+    constructor(private _tokensRepository: AbstractRefreshTokenRepository,
+                private _customersRepository: AbstractCustomersRepository,
+                private _jwtService: JwtService) {
+        super();
     }
 
     async generateAccessToken(customerId: string): Promise<string> {
@@ -37,15 +35,15 @@ export class TokensService {
 
     async generateRefreshToken(customerId: string, expiresIn: number): Promise<string> {
         const token: RefreshToken = await this._tokensRepository.createRefreshToken(customerId, expiresIn);
+        const {SERVER, PORT, FRONTEND_SERVER, FRONTEND_PORT} = process.env;
 
-        const opts: SignOptions = {
-            ...BASE_OPTIONS,
+        return this._jwtService.signAsync({}, {
             expiresIn,
+            issuer: `${SERVER}${PORT}`,
+            audience: `${FRONTEND_SERVER}${FRONTEND_PORT}`,
             subject: customerId,
             jwtid: token.id,
-        };
-
-        return this._jwtService.signAsync({}, opts);
+        });
     }
 
     async resolveRefreshToken(encoded: string): Promise<{ customer: Customer, token: RefreshToken }> {
@@ -53,9 +51,9 @@ export class TokensService {
         const token: RefreshToken = await this._getStoredTokenFromRefreshTokenPayload(payload);
 
         if (!token) {
-            throw new UnprocessableEntityException(REFRESH_TOKEN_NOT_FOUND);
+            throw new UnprocessableEntityException('REFRESH TOKEN NOT FOUND');
         } else if (token.isRevoked) {
-            throw new UnprocessableEntityException(REFRESH_TOKEN_REVOKED);
+            throw new UnprocessableEntityException('REFRESH TOKEN IS REVOKED');
         }
 
         const customer: Customer = await this._getCustomerFromRefreshTokenPayload(payload);
@@ -85,7 +83,7 @@ export class TokensService {
             return await this._jwtService.verifyAsync(token);
         } catch (e) {
             if (e instanceof TokenExpiredError) {
-                throw new UnprocessableEntityException(REFRESH_TOKEN_EXPIRED);
+                throw new UnprocessableEntityException('REFRESH TOKEN EXPIRED');
             } else {
                 throw new UnprocessableEntityException(REFRESH_TOKEN_MALFORMED);
             }

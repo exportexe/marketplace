@@ -16,7 +16,7 @@ import {
     PASSWORD_VALIDATOR,
     USERNAME_VALIDATOR,
 } from '../../constants';
-import {AuthorizationService} from '../../services/authorization.service';
+import {AuthorizationService} from '../../services';
 
 @Component({
     selector: 'sign-up-dialog',
@@ -65,7 +65,7 @@ export class SignUpDialogComponent implements OnInit, OnDestroy {
             password: this._signUpFormGroup.get('password').value,
         };
         this._subs.add(
-            this._authService.signUp(customer).pipe(
+            this._authService.register(customer).pipe(
                 finalize(() => {
                     this._dialogRef.close();
                     this._spinnerService.hide();

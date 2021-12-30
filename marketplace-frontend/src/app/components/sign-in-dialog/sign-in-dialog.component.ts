@@ -80,13 +80,11 @@ export class SignInDialogComponent implements OnInit {
 
     /** @internal */
     _signIn(): void {
-        const {get} = this._signInFormGroup;
-
         this._spinnerService.show();
         this._authService
             .signIn({
-                userName: get('userName').value,
-                password: get('password').value,
+                userName: this._signInFormGroup.get('userName').value,
+                password: this._signInFormGroup.get('password').value,
             })
             .pipe(
                 tap((customer: Customer) => {

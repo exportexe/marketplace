@@ -4,7 +4,7 @@ import {MissingTranslationHandler, MissingTranslationHandlerParams} from '@ngx-t
 @Injectable()
 export class MissingTranslationService extends MissingTranslationHandler {
 
-    handle(params: MissingTranslationHandlerParams): string {
+    public handle(params: MissingTranslationHandlerParams): string {
         return `WARN: '${params.key}' is missing in '${params.translateService.currentLang}' locale`;
     }
 }

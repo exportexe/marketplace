@@ -6,7 +6,3 @@ export const PASSWORD_MAX_LENGTH: number = 16;
 
 export const FIRST_NAME_VALIDATOR: string = `[a-zA-Z-]*`;
 export const FIRST_NAME_LENGTH: number = 20;
-
-export const AGE_MIN_LENGTH: number = 2;
-export const AGE_MAX_LENGTH: number = 3;
-export const AGE_VALIDATOR: number = 100;

@@ -10,14 +10,14 @@
     <div class="market-header__menu"></div>
 
     <div class="market-header__end _right">
-        <ng-container *ngIf="_customerInfo; else noCustomerInfoTemplate">
+        <ng-container *ngIf="_selectCustomerInfo$ | async as customerInfo; else noCustomerInfoTemplate">
             <button class="market-header__end-button"
                     type="button"
                     role="button"
                     [matMenuTriggerFor]="menu"
                     (onMenuClose)="_changeArrowState()"
                     (click)="_changeArrowState()">
-                {{ 'market-header.customer-info' | translate: {userName: _customerInfo.userName} }}
+                {{ 'market-header.customer-info' | translate: {userName: customerInfo.userName} }}
                 <span class="material-icons md-light market-header__end-arrow"
                       [class.market-header__end_arrow-up]="_isArrowDown">
                     arrow_drop_down

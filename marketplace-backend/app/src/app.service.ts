@@ -3,12 +3,15 @@ import {Injectable} from '@nestjs/common';
 @Injectable()
 export class AppService {
 
-    getServerInfo(): string {
+    public getServerInfo(): string {
+        const {SERVER, PORT} = process.env;
+        const author: string = 'https://github.com/exportexe';
+
         return JSON.stringify({
-            Server: process.env.SERVER + process.env.PORT,
+            Server: SERVER + PORT,
             Status: 'Up',
-            Source: 'https://github.com/exportexe/marketplace',
-            Author: 'export.exe',
+            Source: `${author}/marketplace`,
+            Author: author,
         });
     }
 }

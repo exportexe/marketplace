@@ -1,28 +1,27 @@
 import {Injectable, UnprocessableEntityException} from '@nestjs/common';
 import {compare} from 'bcrypt';
 
-import {Customer} from '../schema/customer.schema';
-import {CustomersRepository} from '../repository/customers.repository';
-import {RegisterRequest} from '../../../shared/models/requests.model';
-
-const USER_EXISTS = 'USERNAME OR EMAIL ALREADY IN USE';
+import {RegisterRequest} from '../../models/requests.model';
+import {Customer} from '../../schemas/customer.schema';
+import {AbstractCustomersService} from '../abstract-customers.service';
+import {AbstractCustomersRepository} from '../../repositories/abstract-customers.repository';
 
 @Injectable()
-export class CustomersService {
+export class CustomersService extends AbstractCustomersService {
 
-    constructor(private readonly _customersRepository: CustomersRepository) {
+    constructor(private _customersRepository: AbstractCustomersRepository) {
+        super();
     }
 
-    async validateCredentials(customer: Customer, password: string): Promise<boolean> {
-        return compare(password, customer.password);
+    async validateCredentials(providedPassword: string, customerPassword: string): Promise<boolean> {
+        return compare(providedPassword, customerPassword);
     }
 
     async createCustomerFromRequest(request: RegisterRequest): Promise<Customer> {
         const existingCustomerUserName: Customer = await this.findCustomerByUserName(request.userName);
-        const existingCustomerEMail: Customer = await this.findCustomerByEmail(request.email);
 
-        if (existingCustomerUserName || existingCustomerEMail) {
-            throw new UnprocessableEntityException(USER_EXISTS);
+        if (existingCustomerUserName) {
+            throw new UnprocessableEntityException('USERNAME ALREADY IN USE');
         }
 
         return this._customersRepository.createNewCustomer(request);

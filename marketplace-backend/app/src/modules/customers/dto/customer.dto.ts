@@ -1,4 +1,4 @@
-import {Base} from '../../../shared/models/base.model';
+import {Base} from '../../../models/base.model';
 
 export interface CustomerDto extends Base {
     userName: string;

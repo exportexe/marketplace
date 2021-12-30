@@ -1,13 +1,13 @@
 import {Body, Controller, Get, HttpCode, HttpStatus, Param, Post} from '@nestjs/common';
 
-import {CustomersService} from '../service/customers.service';
-import {Customer} from '../schema/customer.schema';
-import {RegisterRequest} from '../../../shared/models/requests.model';
+import {Customer} from '../../../schemas/customer.schema';
+import {RegisterRequest} from '../../../models/requests.model';
+import {AbstractCustomersService} from '../../../services/abstract-customers.service';
 
-@Controller('api/customerManagement')
+@Controller('api/v1/customerManagement')
 export class CustomersController {
 
-    constructor(private _customersService: CustomersService) {
+    constructor(private _customersService: AbstractCustomersService) {
     }
 
     @Get('all')

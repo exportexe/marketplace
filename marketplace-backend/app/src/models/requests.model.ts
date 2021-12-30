@@ -1,11 +1,8 @@
 import {IsNotEmpty, MinLength} from 'class-validator';
 
-const USERNAME_IS_REQUIRED = 'USERNAME IS REQUIRED';
-const PASSWORD_IS_REQUIRED = 'PASSWORD IS REQUIRED';
-const EMAIL_IS_REQUIRED = 'EMAIL IS REQUIRED';
-const REFRESH_TOKEN_IS_REQUIRED = 'REFRESH TOKEN IS REQUIRED';
-const PASSWORD_VALIDATION_MESSAGE = 'YOUR PASSWORD MUST BE AT LEAST 8 CHARACTERS';
-const PASSWORD_MIN_LENGTH = 8;
+const USERNAME_IS_REQUIRED: string = 'USERNAME IS REQUIRED';
+const PASSWORD_IS_REQUIRED: string = 'PASSWORD IS REQUIRED';
+const PASSWORD_MIN_LENGTH: number = 8;
 
 export class LoginRequest {
 
@@ -26,10 +23,10 @@ export class RegisterRequest {
     readonly userName: string;
 
     @IsNotEmpty({message: PASSWORD_IS_REQUIRED})
-    @MinLength(PASSWORD_MIN_LENGTH, {message: PASSWORD_VALIDATION_MESSAGE})
+    @MinLength(PASSWORD_MIN_LENGTH, {message: 'YOUR PASSWORD MUST BE AT LEAST 8 CHARACTERS'})
     password: string;
 
-    @IsNotEmpty({message: EMAIL_IS_REQUIRED})
+    @IsNotEmpty({message: 'EMAIL IS REQUIRED'})
     email: string;
 
     age?: number;
@@ -37,6 +34,6 @@ export class RegisterRequest {
 
 export class RefreshRequest {
 
-    @IsNotEmpty({message: REFRESH_TOKEN_IS_REQUIRED})
+    @IsNotEmpty({message: 'REFRESH TOKEN IS REQUIRED'})
     readonly refreshToken: string;
 }

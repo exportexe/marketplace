@@ -1,12 +1,14 @@
 import {CustomerDto} from '../dto/customer.dto';
-import {Customer} from '../schema/customer.schema';
+import {Customer} from '../../../schemas/customer.schema';
 
-export function customerToDtoMapper(customer: Customer): CustomerDto {
+export function customerToDtoMapper(customer: Customer = {} as Customer): Omit<CustomerDto, 'name'> {
+    const {id, userName, firstName, email, age} = customer;
+
     return {
-        id: customer?.id,
-        userName: customer?.userName,
-        firstName: customer?.firstName,
-        email: customer?.email,
-        age: customer?.age,
-    } as CustomerDto;
+        id,
+        userName,
+        firstName,
+        email,
+        age,
+    };
 }

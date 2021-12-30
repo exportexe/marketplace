@@ -5,14 +5,15 @@ import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import {CustomersModule} from './modules/customers/customers.module';
 import {AuthModule} from './modules/auth/auth.module';
-
-const mongoDB = process.env.mongoURI;
+const APP_MODULES = [
+    AuthModule,
+    CustomersModule,
+];
 
 @Module({
     imports: [
-        AuthModule,
-        CustomersModule,
-        MongooseModule.forRoot(mongoDB),
+        MongooseModule.forRoot(process.env.mongoURI),
+        ...APP_MODULES,
     ],
     controllers: [
         AppController,

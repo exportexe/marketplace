@@ -6,9 +6,7 @@ import flash = require('connect-flash');
 
 import {AppModule} from './app.module';
 
-const SERVER = process.env.SERVER;
 const PORT = process.env.PORT;
-const SET_COOKIE_HEADER = 'Set-Cookie';
 
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
@@ -16,7 +14,7 @@ async function bootstrap(): Promise<void> {
     app.enableCors({
         origin: true,
         credentials: true,
-        exposedHeaders: SET_COOKIE_HEADER,
+        exposedHeaders: 'Set-Cookie',
     });
     app.use(bodyParser.json());
     app.use(cookieParser());
@@ -24,7 +22,7 @@ async function bootstrap(): Promise<void> {
 
     await app.listen(PORT);
 
-    Logger.log('Server started, running on ' + SERVER + PORT, 'Bootstrap');
+    Logger.log('Server started, running on ' + process.env.SERVER + PORT, 'Bootstrap');
 }
 
 bootstrap();

@@ -1,10 +1,10 @@
 import {CanActivate, Router} from '@angular/router';
 import {Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
-import {finalize, switchMap} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {filter, finalize} from 'rxjs/operators';
 import {NgxSpinnerService} from 'ngx-spinner';
 
-import {AuthorizationService} from '../services/authorization.service';
+import {AuthorizationService} from '../services';
 
 @Injectable()
 export class AccountAuthGuard implements CanActivate {
@@ -20,7 +20,7 @@ export class AccountAuthGuard implements CanActivate {
         return this._authService
             .isAuthenticated()
             .pipe(
-                switchMap((isAuth: boolean) => of(isAuth)),
+                filter((isAuth: boolean) => isAuth),
                 finalize(() => this._spinnerService.hide()),
             );
     }

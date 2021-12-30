@@ -1,17 +1,11 @@
-import {Customer} from '../../customers/schema/customer.schema';
-
-export type TokenPayload = {
-    type: string;
-    token: string;
-    refresh_token?: string;
-};
-
-export type AuthActionsPayload = {
-   status: string;
-   data: AuthPayload | Customer;
-};
+import {Customer} from '../../../schemas/customer.schema';
 
 export interface AuthPayload {
     customer: Customer;
     payload: TokenPayload;
 }
+
+export type TokenPayload = {
+    type: string;
+    refresh_token: string;
+};
