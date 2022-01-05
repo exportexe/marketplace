@@ -1,27 +1,22 @@
-import {CanActivate, Router} from '@angular/router';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {filter, finalize} from 'rxjs/operators';
-import {NgxSpinnerService} from 'ngx-spinner';
+import {CanLoad} from '@angular/router';
+import {Observable, take} from 'rxjs';
 
+import {filterBoolean} from '../operator';
 import {AuthorizationService} from '../service';
 
 @Injectable()
-export class AccountAuthGuard implements CanActivate {
+export class AccountAuthGuard implements CanLoad {
 
-    constructor(private _router: Router,
-                private _authService: AuthorizationService,
-                private _spinnerService: NgxSpinnerService) {
+    constructor(private _authService: AuthorizationService) {
     }
 
-    canActivate(): Observable<boolean> {
-        this._spinnerService.show();
-
+    canLoad(): Observable<boolean> {
         return this._authService
-            .isAuthenticated()
+            .onAuthStatusChanged$
             .pipe(
-                filter((isAuth: boolean) => isAuth),
-                finalize(() => this._spinnerService.hide()),
+                take(1),
+                filterBoolean(),
             );
     }
 }

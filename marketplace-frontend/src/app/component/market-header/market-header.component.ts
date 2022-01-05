@@ -1,16 +1,17 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, Renderer2} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Output} from '@angular/core';
 import {Router} from '@angular/router';
-import {MatDialog} from '@angular/material/dialog';
-import {TranslateService} from '@ngx-translate/core';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {Observable} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {finalize} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {tap} from 'rxjs/operators';
 
+import {Customer} from '../../model';
+import {showSpinner} from '../../operator';
+import {AuthorizationService, DialogService} from '../../service';
+import {AppStoreService} from '../../store/app-store.service';
 import {SignInDialogComponent} from '../sign-in-dialog/sign-in-dialog.component';
 import {SignUpDialogComponent} from '../sign-up-dialog/sign-up-dialog.component';
-import {AuthorizationService} from '../../service';
-import {Customer} from '../../model';
 
 @UntilDestroy()
 @Component({
@@ -29,30 +30,36 @@ export class MarketHeaderComponent {
     /** @internal */
     _selectCustomerInfo$: Observable<Customer> = this._authService.onCustomerInfoChanged$;
 
-    constructor(private _renderer: Renderer2,
-                private _elRef: ElementRef,
-                private _dialogService: MatDialog,
-                private _translateService: TranslateService,
+    /** @internal */
+    _languages: string[] = this._translateService.getLangs();
+
+    /** @internal */
+    _selectedLang: Observable<string> = this._appStoreService.currentLang$;
+
+    @Output()
+    onSidenavOpened: EventEmitter<void> = new EventEmitter<void>();
+
+    constructor(private _dialogService: DialogService,
                 private _authService: AuthorizationService,
                 private _spinnerService: NgxSpinnerService,
-                private _cdr: ChangeDetectorRef,
-                private _router: Router) {
+                private _router: Router,
+                private _translateService: TranslateService,
+                private _appStoreService: AppStoreService) {
+    }
+
+    /** @internal */
+    _openSidenav(): void {
+        this.onSidenavOpened.emit();
     }
 
     /** @internal */
     _signIn(): void {
-        this._dialogService.open<SignInDialogComponent>(SignInDialogComponent, {
-            autoFocus: true,
-            minWidth: '640px',
-        });
+        this._dialogService.openDialog(SignInDialogComponent);
     }
 
     /** @internal */
     _signUp(): void {
-        this._dialogService.open<SignUpDialogComponent>(SignUpDialogComponent, {
-            autoFocus: true,
-            minWidth: '640px',
-        });
+        this._dialogService.openDialog(SignUpDialogComponent);
     }
 
     /** @internal */
@@ -66,18 +73,28 @@ export class MarketHeaderComponent {
     }
 
     /** @internal */
-    _logout(): void {
-        this._spinnerService.show();
+    _changeLanguage(selectedLanguage: string): void {
+        this._translateService.use(selectedLanguage);
+    }
 
+    /** @internal */
+    _logout(): void {
         this._authService
             .logout()
             .pipe(
+                showSpinner(this._spinnerService),
+                tap(() => {
+                    this._authService.changeCustomerInfo(null);
+                    this._authService.changeAuthStatus(false);
+                    this._router.navigateByUrl('/home');
+                }),
                 untilDestroyed(this),
-                finalize(() => this._spinnerService.hide()),
             )
-            .subscribe(() => {
-                this._authService.changeCustomerInfo(null);
-                this._router.navigateByUrl('/home');
-            });
+            .subscribe();
+    }
+
+    /** @internal */
+    _trackByLanguages(index: number): number {
+        return index;
     }
 }

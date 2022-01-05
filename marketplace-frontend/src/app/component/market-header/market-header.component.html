@@ -1,41 +1,53 @@
-<div class="market-header__wrapper">
+<div class="market-header__end">
+    <button style="width: 30px; height: 30px; background-color: #6A26CD"
+            (click)="_openSidenav()">
+    </button>
+    <button class="h3 market-header__end-link"
+            [innerHTML]="'market-header.title' | translate | safeHtml">
+    </button>
+</div>
 
-    <div class="market-header__end">
-        <a class="h3 market-header__end-link"
-           href="#"
-           [innerHTML]="'market-header.title' | translate | safeHtml">
-        </a>
-    </div>
+<div class="market-header__menu"></div>
 
-    <div class="market-header__menu"></div>
-
-    <div class="market-header__end _right">
-        <ng-container *ngIf="_selectCustomerInfo$ | async as customerInfo; else noCustomerInfoTemplate">
-            <button class="market-header__end-button"
-                    type="button"
-                    role="button"
-                    [matMenuTriggerFor]="menu"
-                    (onMenuClose)="_changeArrowState()"
-                    (click)="_changeArrowState()">
-                {{ 'market-header.customer-info' | translate: {userName: customerInfo.userName} }}
-                <span class="material-icons md-light market-header__end-arrow"
-                      [class.market-header__end_arrow-up]="_isArrowDown">
+<div class="market-header__end _right">
+    <ng-container *ngIf="_selectCustomerInfo$ | async as customerInfo; else noCustomerInfoTemplate">
+        <button class="market-header__end-button"
+                type="button"
+                role="button"
+                [matMenuTriggerFor]="appMenu"
+                (onMenuClose)="_changeArrowState()"
+                (click)="_changeArrowState()">
+            {{ 'market-header.customer-info' | translate: {userName: customerInfo.userName} }}
+            <span class="material-icons md-light market-header__end-arrow"
+                  [class.market-header__end_arrow-up]="_isArrowDown">
                     arrow_drop_down
                 </span>
+        </button>
+        <mat-menu #appMenu="matMenu">
+            <button mat-menu-item
+                    (click)="_goToAccountPage()">
+                {{'market-header.account' | translate}}
             </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item
-                        (click)="_goToAccountPage()">
-                    {{'market-header.account' | translate}}
-                </button>
-                <button mat-menu-item
-                        (click)="_logout()">
-                    {{'market-header.exit' | translate}}
-                </button>
-            </mat-menu>
-        </ng-container>
-    </div>
-
+            <button mat-menu-item
+                    (click)="_logout()">
+                {{'market-header.exit' | translate}}
+            </button>
+        </mat-menu>
+    </ng-container>
+    <button *ngIf="_selectedLang | async as selectedLang"
+            type="button"
+            role="button"
+            style="margin-left: 16px"
+            [matMenuTriggerFor]="translateMenu">
+        {{selectedLang}}
+    </button>
+    <mat-menu #translateMenu="matMenu">
+        <button *ngFor="let language of _languages; trackBy: _trackByLanguages"
+                mat-menu-item
+                (click)="_changeLanguage(language)">
+            {{language | uppercase}}
+        </button>
+    </mat-menu>
 </div>
 
 <ng-template #noCustomerInfoTemplate>

@@ -15,7 +15,7 @@ const routes: Routes = [
     },
     {
         path: 'account',
-        canActivate: [AccountAuthGuard],
+        canLoad: [AccountAuthGuard],
         loadChildren: () => import('./module/market-account/market-account.module').then(m => m.MarketAccountModule),
     },
     {

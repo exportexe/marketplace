@@ -29,7 +29,7 @@ import {SignUpDialogComponent} from './sign-up-dialog.component';
         ReactiveFormsModule,
         SafeHtmlModule,
         ScrollingModule,
-        TranslateModule,
+        TranslateModule.forChild(),
     ],
     declarations: [
         SignUpDialogComponent,

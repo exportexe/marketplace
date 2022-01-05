@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {EMPTY, Observable, ReplaySubject} from 'rxjs';
+import {Injectable} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
-
-import {Customer, CustomerCredentials} from '../model';
+import {EMPTY, Observable, ReplaySubject} from 'rxjs';
 import {BACKEND_SERVER, REFRESH_TOKEN_COOKIE_NAME} from '../constant';
-import {AuthEndpoint} from '../enum';
+import {AuthEndpoint} from '../enums';
+
+import {Customer, CustomerAuthPayload, CustomerCredentials, CustomerDto, CustomerFormData} from '../model';
 
 @Injectable({
     providedIn: 'root',
@@ -13,10 +13,16 @@ import {AuthEndpoint} from '../enum';
 export class AuthorizationService {
 
     public get onCustomerInfoChanged$(): Observable<Customer> {
-        return AuthorizationService._onCustomerInfoChanged$.asObservable();
+        return AuthorizationService._onCustomerInfoChanged$;
+    }
+
+    public get onAuthStatusChanged$(): Observable<boolean> {
+        return AuthorizationService._onAuthStatusChanged$;
     }
 
     private static _onCustomerInfoChanged$: ReplaySubject<Customer> = new ReplaySubject<Customer>(1);
+
+    private static _onAuthStatusChanged$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
     constructor(private _http: HttpClient,
                 private _cookiesService: CookieService) {
@@ -38,14 +44,14 @@ export class AuthorizationService {
         );
     }
 
-    public signIn(credentials: CustomerCredentials): Observable<Customer> {
-        return this._http.post<Customer>(BACKEND_SERVER + AuthEndpoint.SignIn, credentials, {
+    public signIn(credentials: CustomerCredentials): Observable<CustomerDto> {
+        return this._http.post<CustomerDto>(BACKEND_SERVER + AuthEndpoint.SignIn, credentials, {
             withCredentials: true,
         });
     }
 
-    public register(customerInfo: Customer): Observable<Customer> {
-        return this._http.post<Customer>(BACKEND_SERVER + AuthEndpoint.Register, customerInfo, {
+    public register(customerInfo: CustomerFormData): Observable<CustomerDto> {
+        return this._http.post<CustomerDto>(BACKEND_SERVER + AuthEndpoint.Register, customerInfo, {
             withCredentials: true,
         });
     }
@@ -56,20 +62,18 @@ export class AuthorizationService {
         });
     }
 
-    public isAuthenticated(): Observable<boolean> {
-        return this._http.get<boolean>(BACKEND_SERVER + AuthEndpoint.IsAuthenticated, {
-            withCredentials: true,
-        });
-    }
-
-    public getCustomerInfo(): Observable<Customer> {
-        return this._http.get<Customer>(BACKEND_SERVER + AuthEndpoint.GetCustomerInfo, {
+    public getCustomerInfo(): Observable<CustomerAuthPayload> {
+        return this._http.get<CustomerAuthPayload>(BACKEND_SERVER + AuthEndpoint.GetCustomerInfo, {
             withCredentials: true,
         });
     }
 
     public changeCustomerInfo(customer: Customer): void {
         AuthorizationService._onCustomerInfoChanged$.next(customer);
+    }
+
+    public changeAuthStatus(isAuth: boolean): void {
+        AuthorizationService._onAuthStatusChanged$.next(isAuth);
     }
 
     private _isRefreshTokenNeeded(): boolean {

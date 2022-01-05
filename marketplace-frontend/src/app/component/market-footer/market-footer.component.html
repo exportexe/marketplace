@@ -1,8 +1,9 @@
-<div class="market-footer__wrapper">
+<footer class="market-footer__wrapper">
     <div class="market-footer__content"
          waIntersectionObserver
          waIntersectionThreshold="0.5"
          [innerHTML]="'market-footer.info' | translate | safeHtml"
          (waIntersectionObservee)="_onIntersectionObserverEvent($event)">
     </div>
-</div>
+</footer>
+

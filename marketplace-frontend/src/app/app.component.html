@@ -1,8 +1,40 @@
-<ngx-spinner type="timer"></ngx-spinner>
+<!--App loader-->
+<ngx-spinner type="ball-8bits"
+             size="medium">
+</ngx-spinner>
+
 <div class="app-wrapper">
-    <market-header></market-header>
-    <main>
-        <router-outlet></router-outlet>
-    </main>
+
+    <market-header (onSidenavOpened)="sidenav.toggle()"></market-header>
+
+    <mat-drawer-container [hasBackdrop]="true">
+
+        <mat-drawer #sidenav
+                    class="app-wrapper__sidenav"
+                    mode="over"
+                    [(opened)]="_isPanelOpened">
+
+            <div class="app-wrapper__sidenav-wrapper _top">
+
+                <div class="app-wrapper__sidenav-wrapper"></div>
+
+                <p class="app-wrapper__sidenav-wrapper _ref"></p>
+
+            </div>
+
+        </mat-drawer>
+
+        <mat-drawer-content>
+
+            <main id="main"
+                  class="app-wrapper__content">
+                <router-outlet></router-outlet>
+            </main>
+
+            <market-footer></market-footer>
+
+        </mat-drawer-content>
+
+    </mat-drawer-container>
+
 </div>
-<market-footer></market-footer>

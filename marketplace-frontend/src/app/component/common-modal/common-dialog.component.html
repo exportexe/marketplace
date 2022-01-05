@@ -6,9 +6,7 @@
     </button>
 </h2>
 
-<mat-dialog-content>
-    <div [innerHTML]="data.bodyContent | safeHtml"></div>
-</mat-dialog-content>
+<mat-dialog-content [innerHTML]="data.bodyContent | safeHtml"></mat-dialog-content>
 
 <mat-dialog-actions>
     <button class="mat-raised-button"

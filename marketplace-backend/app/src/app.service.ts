@@ -10,8 +10,8 @@ export class AppService {
         return JSON.stringify({
             Server: SERVER + PORT,
             Status: 'Up',
-            Source: `${author}/marketplace`,
             Author: author,
+            Source: `${author}/marketplace`,
         });
     }
 }

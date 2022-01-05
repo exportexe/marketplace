@@ -10,7 +10,7 @@ import {MarketFooterComponent} from './market-footer.component';
     imports: [
         CommonModule,
         SafeHtmlModule,
-        TranslateModule,
+        TranslateModule.forChild(),
         IntersectionObserverModule,
     ],
     declarations: [

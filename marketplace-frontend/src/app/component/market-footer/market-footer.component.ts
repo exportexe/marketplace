@@ -8,9 +8,10 @@ import {ChangeDetectionStrategy, Component, HostBinding} from '@angular/core';
 export class MarketFooterComponent {
 
     @HostBinding('class.market-footer')
-    public class: boolean = true;
+    class: boolean = true;
 
-    public _onIntersectionObserverEvent(event: IntersectionObserverEntry[]): void {
-        console.log(event[0].isIntersecting);
+    /** @internal */
+    _onIntersectionObserverEvent(observerEntries: IntersectionObserverEntry[]): void {
+        console.log(observerEntries[0].isIntersecting);
     }
 }

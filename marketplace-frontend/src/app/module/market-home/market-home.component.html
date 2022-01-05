@@ -1,4 +1,5 @@
-<div class="" style="display: grid; grid-template-columns: repeat(3, 1fr); grid-row-gap: 32px; grid-column-gap: 24px; padding: 64px;">
+<div class=""
+     style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); grid-row-gap: 32px; grid-column-gap: 24px; padding: 8px;">
 
     <product-card *ngFor="let product of _products; trackBy: _trackByProducts"
                   [product]="product">

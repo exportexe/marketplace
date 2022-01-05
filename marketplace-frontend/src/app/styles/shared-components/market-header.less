@@ -1,19 +1,17 @@
 .market-header {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    color: @color-white;
-    background-color: @color-black;
-    transition: box-shadow .2s linear;
-
-    &__wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 16px 0;
-    }
+    color: @white;
+    background-color: @black;
+    padding: 16px;
+    position: fixed;
+    z-index: 2;
+    height: @header-height;
+    max-height: @header-height;
+    inset: 0;
+    box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
 
     &__end {
         display: flex;
@@ -21,7 +19,7 @@
         align-items: center;
 
         &-link {
-            color: @color-white;
+            color: @white;
         }
 
         &-button {
@@ -31,7 +29,7 @@
 
         &-divider {
             display: block;
-            border-left: 2px solid @color-white;
+            border-left: 2px solid @white;
             height: 16px;
             margin: 0 8px;
         }
@@ -59,6 +57,6 @@
         position: fixed;
         top: 0;
         width: 100%;
-        box-shadow: 0 1px 8px 2px @color-black;
+        box-shadow: 0 1px 8px 2px @black;
     }
 }

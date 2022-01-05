@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, HostBinding} from '@angular/core';
 
-import {Product} from '../../model/product.model';
+import {Product} from '../../model/product/product.model';
 
 @Component({
     selector: 'market-home',

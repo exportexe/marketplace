@@ -1,13 +1,11 @@
-import {ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, HostBinding, Inject, OnInit} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {TranslateService} from '@ngx-translate/core';
-import {Subscription} from 'rxjs';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {ToastrService} from 'ngx-toastr';
-import {finalize} from 'rxjs/operators';
 
-import {CommonDialog, Customer} from '../../model';
+import {CommonDialog} from '../../model';
 import {
     FIRST_NAME_LENGTH,
     FIRST_NAME_VALIDATOR,
@@ -16,17 +14,22 @@ import {
     PASSWORD_VALIDATOR,
     USERNAME_VALIDATOR,
 } from '../../constant';
-import {AuthorizationService} from '../../service';
+import {showSpinner} from '../../operator';
+import {SignUpDialogService} from './sign-up-dialog.service';
 
+@UntilDestroy()
 @Component({
     selector: 'sign-up-dialog',
     templateUrl: './sign-up-dialog.component.html',
-    host: {
-        class: 'sign-up-dialog',
-    },
+    providers: [
+        SignUpDialogService,
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SignUpDialogComponent implements OnInit, OnDestroy {
+export class SignUpDialogComponent implements OnInit {
+
+    @HostBinding('class.sign-up-dialog')
+    class: boolean = true;
 
     /** @internal */
     _signUpFormGroup: FormGroup;
@@ -37,73 +40,13 @@ export class SignUpDialogComponent implements OnInit, OnDestroy {
     /** @internal */
     _backgroundImageSrc: string = '/assets/images/back.jpeg';
 
-    private _subs: Subscription = new Subscription();
-
     constructor(@Inject(MAT_DIALOG_DATA) public data: CommonDialog,
-                private _dialogRef: MatDialogRef<SignUpDialogComponent>,
                 private _translateService: TranslateService,
-                private _spinnerService: NgxSpinnerService,
-                private _toastService: ToastrService,
-                private _authService: AuthorizationService) {
+                private _signUpDialogService: SignUpDialogService,
+                private _spinnerService: NgxSpinnerService) {
     }
 
     ngOnInit(): void {
-        this._initFormGroup();
-    }
-
-    ngOnDestroy(): void {
-        this._subs.unsubscribe();
-    }
-
-    /** @internal */
-    _signUp(): void {
-        this._spinnerService.show();
-        const customer: Customer = {
-            userName: this._signUpFormGroup.get('userName').value,
-            firstName: this._signUpFormGroup.get('firstName').value,
-            email: this._signUpFormGroup.get('email').value,
-            password: this._signUpFormGroup.get('password').value,
-        };
-        this._subs.add(
-            this._authService.register(customer).pipe(
-                finalize(() => {
-                    this._dialogRef.close();
-                    this._spinnerService.hide();
-                }),
-            ).subscribe(
-                (customer: Customer) => {
-                    this._authService.changeCustomerInfo(customer);
-                    this._toastService.success(
-                        this._translateService.instant('sign-up-dialog.welcome', {
-                            userName: customer.userName,
-                        }),
-                        this._translateService.instant('sign-up-dialog.login-success'),
-                    );
-                },
-                (error: Error) => {
-                    this._toastService.error(
-                        this._translateService.instant('sign-up-dialog.login-error-message'),
-                        this._translateService.instant('sign-up-dialog.login-error'),
-                    );
-                },
-            ),
-        );
-    }
-
-    /** @internal */
-    _getErrorMessage(formControlName: string, onlyForRequiredValidator?: boolean): string {
-        const formControl: AbstractControl = this._signUpFormGroup?.get(formControlName);
-
-        if (formControl?.hasError('required')) {
-            return this._translateService.instant('sign-in-dialog.required-validator');
-        } else if (!onlyForRequiredValidator && formControl?.hasError('pattern')) {
-            return this._translateService.instant('sign-in-dialog.username-pattern-validator');
-        } else {
-            return '';
-        }
-    }
-
-    private _initFormGroup(): void {
         this._signUpFormGroup = new FormGroup({
             userName: new FormControl(
                 '',
@@ -136,5 +79,34 @@ export class SignUpDialogComponent implements OnInit, OnDestroy {
                 ],
             ),
         });
+    }
+
+    /** @internal */
+    _signUp(): void {
+        this._signUpDialogService
+            .register({
+                userName: this._signUpFormGroup.get('userName').value,
+                firstName: this._signUpFormGroup.get('firstName').value,
+                email: this._signUpFormGroup.get('email').value,
+                password: this._signUpFormGroup.get('password').value,
+            })
+            .pipe(
+                showSpinner(this._spinnerService),
+                untilDestroyed(this),
+            )
+            .subscribe();
+    }
+
+    /** @internal */
+    _getErrorMessage(formControlName: string, onlyForRequiredValidator?: boolean): string {
+        const formControl: AbstractControl = this._signUpFormGroup?.get(formControlName);
+
+        if (formControl?.hasError('required')) {
+            return this._translateService.instant('sign-in-dialog.required-validator');
+        } else if (!onlyForRequiredValidator && formControl?.hasError('pattern')) {
+            return this._translateService.instant('sign-in-dialog.username-pattern-validator');
+        } else {
+            return '';
+        }
     }
 }

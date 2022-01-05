@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, HostBinding, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {NgxSpinnerService} from 'ngx-spinner';
@@ -8,9 +8,10 @@ import {ToastrService} from 'ngx-toastr';
 import {EMPTY} from 'rxjs';
 import {catchError, finalize, tap} from 'rxjs/operators';
 
-import {CommonDialog, Customer, SocialIcon} from '../../model';
+import {CommonDialog, Customer, CustomerDto, SocialIcon} from '../../model';
 import {PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, USERNAME_VALIDATOR} from '../../constant';
-import {AuthorizationService} from '../../service';
+import {showSpinner} from '../../operator';
+import {AuthorizationService, DialogService} from '../../service';
 import {SignUpDialogComponent} from '../sign-up-dialog/sign-up-dialog.component';
 
 @UntilDestroy()
@@ -56,7 +57,7 @@ export class SignInDialogComponent implements OnInit {
                 private _spinnerService: NgxSpinnerService,
                 private _toastService: ToastrService,
                 private _authService: AuthorizationService,
-                private _dialogService: MatDialog) {
+                private _dialogService: DialogService) {
     }
 
     ngOnInit(): void {
@@ -80,15 +81,16 @@ export class SignInDialogComponent implements OnInit {
 
     /** @internal */
     _signIn(): void {
-        this._spinnerService.show();
         this._authService
             .signIn({
                 userName: this._signInFormGroup.get('userName').value,
                 password: this._signInFormGroup.get('password').value,
             })
             .pipe(
-                tap((customer: Customer) => {
+                showSpinner(this._spinnerService),
+                tap((customer: CustomerDto) => {
                     this._authService.changeCustomerInfo(customer);
+                    this._authService.changeAuthStatus(true);
                     this._toastService.success(
                         this._translateService.instant('sign-in-dialog.welcome', {
                             userName: customer.userName,
@@ -104,11 +106,8 @@ export class SignInDialogComponent implements OnInit {
 
                     return EMPTY;
                 }),
+                finalize(() => this._dialogRef.close()),
                 untilDestroyed(this),
-                finalize(() => {
-                    this._dialogRef.close();
-                    this._spinnerService.hide();
-                }),
             )
             .subscribe();
     }
@@ -116,7 +115,7 @@ export class SignInDialogComponent implements OnInit {
     /** @internal */
     _goToSignUp(): void {
         this._dialogRef.close();
-        this._dialogService.open(SignUpDialogComponent, {autoFocus: true, minWidth: '640px'});
+        this._dialogService.openDialog(SignUpDialogComponent);
     }
 
     /** @internal */

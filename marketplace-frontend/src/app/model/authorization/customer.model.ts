@@ -7,3 +7,12 @@ export interface Customer extends Base {
     age?: number;
     password?: string;
 }
+
+export type CustomerDto = Omit<Customer, 'id' | 'name' | 'password'>;
+
+export type CustomerAuthPayload = {
+    customerInfo: CustomerDto;
+    isAuth: boolean;
+}
+
+export type CustomerFormData = Customer;
