@@ -12,11 +12,11 @@ import {ToastrModule} from 'ngx-toastr';
 import {environment} from '../environments/environment';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {MarketFooterModule} from './component/market-footer/market-footer.module';
-import {MarketHeaderModule} from './component/market-header/market-header.module';
-import {AuthInterceptor} from './interceptor';
-import {MissingTranslationService} from './service';
-import {HttpLoaderFactory} from './util';
+import {MarketFooterModule} from './components/market-footer/market-footer.module';
+import {MarketHeaderModule} from './components/market-header/market-header.module';
+import {AuthInterceptor} from './interceptors';
+import {MissingTranslationService} from './services';
+import {HttpLoaderFactory} from './utils';
 
 const COMPONENTS_MODULES = [
     MarketFooterModule,

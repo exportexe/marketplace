@@ -1,0 +1,81 @@
+<ng-container *ngIf="_onScreenResolutionChange$ | async as screenResolutionPayload">
+    <div class="market-header__corner">
+        <label for="burger"
+               class="market-header__burger"
+               [attr.aria-label]="'market-header.burger-aria-label' | translate">
+            <input id="burger"
+                   type="checkbox"
+                   class="market-header__burger-checkbox"
+                   (click)="_openSidenav()"/>
+            <span class="market-header__burger-line"></span>
+            <span class="market-header__burger-line"></span>
+            <span class="market-header__burger-line"></span>
+        </label>
+        <button class="h3 market-header__corner-link"
+                [innerHTML]="'market-header.title' | translate | safeHtml">
+        </button>
+    </div>
+
+    <div *ngIf="screenResolutionPayload.currentResolution === screenResolutionPayload.screenSize.Large"
+         class="market-header__menu">
+    </div>
+
+    <div class="market-header__corner _right">
+        <ng-container *ngIf="_selectCustomerInfo$ | async as customerInfo; else noCustomerInfoTemplate">
+            <button class="market-header__corner-button"
+                    type="button"
+                    role="button"
+                    [matMenuTriggerFor]="appMenu"
+                    (onMenuClose)="_changeArrowState()"
+                    (click)="_changeArrowState()">
+                {{ 'market-header.customer-info' | translate: {userName: customerInfo.userName} }}
+                <span class="material-icons md-light market-header__corner-arrow"
+                      [class.market-header__corner_arrow-up]="_isArrowDown">
+                    arrow_drop_down
+                </span>
+            </button>
+            <mat-menu #appMenu="matMenu">
+                <button mat-menu-item
+                        (click)="_goToAccountPage()">
+                    {{'market-header.account' | translate}}
+                </button>
+                <button mat-menu-item
+                        (click)="_logout()">
+                    {{'market-header.exit' | translate}}
+                </button>
+            </mat-menu>
+        </ng-container>
+
+        <!--TODO: Redo this section-->
+        <button *ngIf="_selectedLang | async as selectedLang"
+                type="button"
+                role="button"
+                style="margin-left: 16px"
+                [matMenuTriggerFor]="translateMenu">
+            {{selectedLang}}
+        </button>
+        <mat-menu #translateMenu="matMenu">
+            <button *ngFor="let language of _languages; trackBy: _trackByLanguages"
+                    mat-menu-item
+                    (click)="_changeLanguage(language)">
+                {{language | uppercase}}
+            </button>
+        </mat-menu>
+
+
+    </div>
+</ng-container>
+
+<ng-template #noCustomerInfoTemplate>
+    <button type="button"
+            role="button"
+            (click)="_signIn()">
+        {{'market-header.sign-in' | translate}}
+    </button>
+    <div class="market-header__corner-divider"></div>
+    <button type="button"
+            role="button"
+            (click)="_signUp()">
+        {{'market-header.sign-up' | translate}}
+    </button>
+</ng-template>
