@@ -4,8 +4,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {tap} from 'rxjs/operators';
 
 import {environment} from '../environments/environment';
-import {CustomerAuthPayload} from './model';
-import {AuthorizationService} from './service';
+import {CustomerAuthPayload} from './models';
+import {AuthorizationService} from './services';
 import {AppStoreService} from './store/app-store.service';
 
 @UntilDestroy()
