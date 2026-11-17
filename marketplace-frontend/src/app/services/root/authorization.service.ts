@@ -87,10 +87,4 @@ export class AuthorizationService {
 
         return Date.now() > (expiresAtCookie - timeBeforeTokenShouldBeRefreshed);
     }
-        const expiresAtCookie: number = +this._cookiesService.get('token_expires_at');
-
-        const timeBeforeTokenShouldBeRefreshed: number = 60000;
-
-        return Date.now() > (expiresAtCookie - timeBeforeTokenShouldBeRefreshed);
-    }
 }
